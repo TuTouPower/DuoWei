@@ -1,10 +1,11 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { findWeChatApp, checkExecutableFile, selectWeChatApp } = require('./utils.js');
 const { exec } = require('child_process');
-const fs = require('fs');
-const path = require('path');
 
+// 在这里声明全局变量
 let mainWindow;
 let settingsWindow;
+let weChatPath;
 
 function createMainWindow () {
     mainWindow = new BrowserWindow({
@@ -32,51 +33,28 @@ function createSettingsWindow () {
     settingsWindow.loadFile('settings.html');
 }
 
-app.whenReady().then(() => {
-    // 查找 WeChat 应用的路径
-    const applicationsPath = '/Applications';
-    weChatPath = null;
-    fs.readdir(applicationsPath, (err, files) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
+app.whenReady().then(async () => {
 
-        for (let file of files) {
-            if (file.toLowerCase().startsWith('wechat123.app')) {
-                weChatPath = path.join(applicationsPath, file, 'Contents', 'MacOS', 'WeChat');
-                console.log(`weChatPath: ${weChatPath}`);
-                break;
-            }
-        }
+    weChatPath = await findWeChatApp();
 
-        // 创建主窗口
-        createMainWindow();
+    createMainWindow();
 
-        if (weChatPath == null) {
-            weChatPath = 'Not Found WeChat.app, Please Set It In Settings';
-            console.log(`weChatPath: ${weChatPath}`);
-            dialog.showMessageBox(mainWindow, {
-                type: 'info',
-                title: 'WeChat not found',
-                message: 'WeChat app is not found, please select the path in the following dialog.',
-                buttons: ['OK']
-            }).then(() => {
-                dialog.showOpenDialog(mainWindow, {
-                    title: 'Select WeChat App',
-                    properties: ['openFile'],
-                    filters: [
-                        { name: 'Applications', extensions: ['app'] }
-                    ]
-                }).then(result => {
-                    if (!result.canceled) {
-                        weChatPath = result.filePaths[0];
-                        mainWindow.webContents.send('wechat-path', weChatPath);
-                    }
-                });
-            });
-        }
-    });
+    if (!weChatPath) {
+        await dialog.showMessageBox(mainWindow, {
+            type: 'info',
+            title: 'WeChat not found',
+            message: 'WeChat app is not found, please select the path in the following dialog.',
+            buttons: ['OK']
+        });
+        weChatPath = await selectWeChatApp(dialog, mainWindow);
+    }
+
+    mainWindow.webContents.send('wechat-path', weChatPath);
+    
+    if (!checkExecutableFile(weChatPath)) {
+        dialog.showErrorBox('Error', 'The selected wechat app does not contain the executable file.');
+    }
+
 });
 
 app.on('window-all-closed', function () {
