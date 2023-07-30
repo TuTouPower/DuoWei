@@ -9,6 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
         weChatPathInput.value = path;
     });
 
+    // createMainWindow() 的时候这个传递 weChatPath
     ipcRenderer.send('get-wechat-path');
 
     weChatPathInput.addEventListener('change', () => {
@@ -16,8 +17,8 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     runCommandButton.addEventListener('click', () => {
-        ipcRenderer.send('run-command', weChatCountInput.value);
-    });
+        ipcRenderer.send('run-command', weChatCountInput.value, weChatPathInput.value);
+    });    
 
     settingsButton.addEventListener('click', () => {
         ipcRenderer.send('open-settings');

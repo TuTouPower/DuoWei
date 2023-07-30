@@ -16,6 +16,9 @@ function createMainWindow () {
             contextIsolation: false,
         }
     });
+    
+    // 开发者工具
+    // mainWindow.webContents.openDevTools();
 
     mainWindow.loadFile('index.html');
 }
@@ -50,7 +53,7 @@ app.whenReady().then(async () => {
     }
 
     mainWindow.webContents.send('wechat-path', weChatPath);
-    
+
     if (!checkExecutableFile(weChatPath)) {
         dialog.showErrorBox('Error', 'The selected wechat app does not contain the executable file.');
     }
@@ -65,10 +68,12 @@ app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
 });
 
-ipcMain.on('run-command', (event, count) => {
+ipcMain.on('run-command', (event, count, weChatPath) => {
+    let runWeChatShell = `nohup ${weChatPath}/Contents/MacOS/WeChat > /dev/null 2>&1 &`;
+
     // 执行指定次数的命令
     for (let i = 0; i < count; i++) {
-        exec('open -n /Applications/WeChat.app/Contents/MacOS/WeChat', (error, stdout, stderr) => {
+        exec(runWeChatShell, (error, stdout, stderr) => {
             if (error) {
                 console.error(`exec error: ${error}`);
                 return;
