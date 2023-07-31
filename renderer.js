@@ -1,6 +1,7 @@
 const { ipcRenderer } = require('electron');
 const runCommandButton = document.getElementById('runCommandButton');
 const settingsButton = document.getElementById('settingsButton');
+const setWeChatPathButton = document.getElementById('setWeChatPath');
 const weChatCountInput = document.getElementById('wechatCount');
 const weChatPathInput = document.getElementById('wechatPath');
 const weChatStatusElement = document.getElementById('wechat-status');
@@ -23,6 +24,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
     settingsButton.addEventListener('click', () => {
         ipcRenderer.send('open-settings');
+    });
+
+    setWeChatPathButton.addEventListener('click', () => {
+        ipcRenderer.send('set-wechat-path-clicked');
     });
 
     ipcRenderer.on('wechat-status', (event, weChatRunningProcessCount) => {

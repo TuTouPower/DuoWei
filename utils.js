@@ -54,9 +54,7 @@ exports.checkWeChatProcess = async (mainWindow, weChatPath) => {
 
     const list = await find('name', 'WeChat', true);
     const specificProcessList = list.filter(proc => proc.bin === binPath && proc.cmd === cmdPath);
-    console.log('Specific process list:', specificProcessList);
     const nowWeChatRunningProcessCount = specificProcessList.length;
-    console.log('nowWeChatRunningProcessCount:', nowWeChatRunningProcessCount);
 
     // 如果 WeChat 的运行状态发生了变化，发送一个 IPC 事件到前端
     if (weChatRunningProcessCount !== nowWeChatRunningProcessCount) {

@@ -102,6 +102,15 @@ ipcMain.on('run-command', (event, count, weChatPath) => {
     }
 });
 
+ipcMain.on('set-wechat-path-clicked', async (event) => {
+    weChatPath = await selectWeChatApp(dialog, mainWindow);
+    mainWindow.webContents.send('wechat-path', weChatPath);
+    if (!checkExecutableFile(weChatPath)) {
+        dialog.showErrorBox('Error', 
+                `The selected wechat app does not contain the executable file. ${weChatPath}/Contents/MacOS/WeChat`);
+    }
+});
+
 ipcMain.on('open-settings', (event) => {
     createSettingsWindow();
 });

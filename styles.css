@@ -1,55 +1,63 @@
 body {
+    background-color: #f0f0f0;
     font-family: Arial, sans-serif;
+    color: #333;
+    text-align: center;
     padding: 20px;
-    background-color: #f5f5f5;
-    position: relative;
 }
 
 h1 {
+    font-size: 3em;
     color: #333;
 }
 
-#wechatPath, #wechatCount {
-    padding: 10px;
-    margin: 20px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-#wechatCount {
-    width: 60px;
+#wechat-status {
+    margin-bottom: 20px;
 }
 
 .input-container {
     display: flex;
+    justify-content: center;
     align-items: center;
+    margin-bottom: 20px;
+}
+
+.input-container label {
+    margin-right: 10px;
+}
+
+.input-container input {
+    margin-right: 10px;
+}
+
+.centered-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: fit-content;
+    margin: auto;
 }
 
 button {
     padding: 10px 20px;
     color: white;
+    background-color: #007BFF;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin: 0 auto;
 }
 
-#runCommandButton {
-    background-color: #4CAF50; 
-    margin-left: 10px;
-}
-
-#runCommandButton:hover {
-    background-color: #45a049;
+button:hover {
+    background-color: #0056b3;
 }
 
 #settingsButton {
-    background-color: #008CBA;
     position: absolute;
-    right: 0;
-    top: 0;
+    top: 10px;
+    right: 10px;
 }
 
-#settingsButton:hover {
-    background-color: #007B9E;
+#runCommandButton, #setWeChatPath {
+    margin-top: 20px;
 }

@@ -7,14 +7,17 @@
 </head>
 <body>
     <h1>WeChat Multi-opener</h1>
-    <text id="wechat-status">正在查找是否有微信进程在运行</text>
-    <div class="input-container">
-        <label for="wechatPath">WeChat Path:</label>
-        <input id="wechatPath" type="text">
-    </div>
-    <div class="input-container">
-        <label for="wechatCount">WeChat Count:</label>
-        <input id="wechatCount" type="number" min="1" step="1">
+    <div class="centered-container">
+        <text id="wechat-status">正在查找是否有微信进程在运行</text>
+        <div class="input-container">
+            <label for="wechatPath">WeChat Path:</label>
+            <input id="wechatPath" type="text">
+            <button id="setWeChatPath">Set Path</button>
+        </div>
+        <div class="input-container">
+            <label for="wechatCount">WeChat Count:</label>
+            <input id="wechatCount" type="number" min="1" step="1">
+        </div>
     </div>
     <button id="runCommandButton">Run</button>
     <button id="settingsButton">Settings</button>
