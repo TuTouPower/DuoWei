@@ -1,11 +1,14 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { findWeChatApp, selectWeChatApp, checkWeChatStatus } = require('./utils.js');
 const { exec } = require('child_process');
+const Store = require('electron-store');
 
 // 在这里声明全局变量
 let mainWindow;
 let settingsWindow;
 let weChatAppPath;
+let weChatOpenCount = 1;
+const store = new Store();
 
 function createMainWindow () {
     mainWindow = new BrowserWindow({
@@ -38,8 +41,11 @@ function createSettingsWindow () {
 
 app.whenReady().then(async () => {
 
-    weChatAppPath = await findWeChatApp();
-
+    // 优先从 store 中获取 weChatAppPath，没成功的话再调用 findWeChatApp
+    weChatAppPath = store.get('wechatAppPath');
+    weChatAppPath = weChatAppPath || await findWeChatApp();
+    weChatOpenCount = store.get('wechatOpenCount', 1);
+    
     createMainWindow();
 
     // 必须这样写前几次执行的才快，不知道为什么
@@ -70,6 +76,12 @@ app.on('window-all-closed', function () {
 
 app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
+});
+
+app.on('before-quit', function () {
+    // 存储用户配置
+    store.set('wechatAppPath', weChatAppPath)
+    store.set('wechatOpenCount', weChatOpenCount)
 });
 
 ipcMain.on('not-run-command', (event, weChatStatusText) => {
@@ -109,6 +121,10 @@ ipcMain.on('open-settings', (event) => {
 
 ipcMain.on('get-wechat-path', (event) => {
     event.reply('wechat-path', weChatAppPath);
+});
+
+ipcMain.on('wechat-open-count', (event, newCount) => {
+    weChatOpenCount = newCount;
 });
 
 ipcMain.on('set-wechat-path', (event, newPath) => {

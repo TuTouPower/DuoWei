@@ -2,8 +2,8 @@ const { ipcRenderer } = require('electron');
 const runCommandButton = document.getElementById('runCommandButton');
 const settingsButton = document.getElementById('settingsButton');
 const setWeChatPathButton = document.getElementById('setWeChatPath');
-const weChatCountInput = document.getElementById('wechatCount');
 const weChatAppPathInput = document.getElementById('wechatPath');
+const weChatCountInput = document.getElementById('wechatCount');
 const weChatStatusText = document.getElementById('wechat-status');
 
 let weChatStatus = -10000; 
@@ -19,24 +19,28 @@ window.addEventListener('DOMContentLoaded', () => {
     ipcRenderer.on('wechat-status', (event, status) => {
         weChatStatus = status
         if (weChatStatus == 0 ){
-            weChatStatusText.textContent = 'Please enter the number of WeChat to open and  click the run button';
+            weChatStatusText.textContent = 'Please enter the number of WeChat to open and click the Run button.';
             runCommandButton.style.background = '#007BFF';
         } else if (weChatStatus == -1 ){
-            weChatStatusText.textContent = 'WeChat path is empty. Please set it';
+            weChatStatusText.textContent = 'WeChat path is empty. Please set it.';
             runCommandButton.style.background = 'gray';
         } else if (weChatStatus == -2 ){
             weChatStatusText.textContent =
-                    'Do not find executable file in the selected WeChat path. Please set right path';
+                    'Do not find executable file in the selected WeChat path. Please set right path.';
             runCommandButton.style.background = 'gray';
         } else {
             weChatStatusText.textContent =
-                    `${weChatStatus} WeChat is running, please exit WeChat and then open WeChat more`;
+                    `${weChatStatus} WeChat is running, please exit WeChat and then open WeChat more.`;
             runCommandButton.style.background = 'gray';
         }
     });
 
     weChatAppPathInput.addEventListener('change', () => {
         ipcRenderer.send('set-wechat-path', weChatAppPathInput.value);
+    });
+
+    weChatCountInput.addEventListener('change', () => {
+        ipcRenderer.send('wechat-open-count', weChatCountInput.value);
     });
 
     setWeChatPathButton.addEventListener('click', () => {
