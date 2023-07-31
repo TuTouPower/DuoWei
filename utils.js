@@ -2,14 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const find = require('find-process');
 
-
-// -2 未在 weChatAppPath 下找到可执行文件
-// -1 weChatAppPath 不存在
-// 0 未运行
-// 1+ 运行中的进程数
-let weChatStatus = -10000;
-
-exports.findWeChatApp = async () => {
+async function findWeChatAppPath() {
     const applicationsPath = '/Applications';
     try {
         const files = fs.readdirSync(applicationsPath);
@@ -20,11 +13,12 @@ exports.findWeChatApp = async () => {
         }
     } catch (err) {
         console.error(err);
+        throw err;
     }
     return null;
 };
 
-exports.selectWeChatApp = async (dialog, mainWindow) => {
+async function selectWeChatAppThroughDialog(dialog, mainWindow) {
     try {
         const result = await dialog.showOpenDialog(mainWindow, {
             title: 'Select WeChat App',
@@ -38,30 +32,37 @@ exports.selectWeChatApp = async (dialog, mainWindow) => {
         }
     } catch (err) {
         console.error(err);
+        throw err;
     }
     return null;
 };
 
-function checkWeChatAppDirectory (weChatAppPath) {
+function isWeChatAppDirectoryValid(weChatAppPath) {
     return !!weChatAppPath;
 };
 
-function checkWeChatExecutableFile (weChatAppPath) {
+function isWeChatExecutableFileValid(weChatAppPath) {
     const executableFilePath = path.join(weChatAppPath, 'Contents', 'MacOS', 'WeChat');
     try {
         return fs.existsSync(executableFilePath);
     } catch (err) {
         console.error(err);
+        throw err;
     }
-    return false;
 };
 
-// TODO: weChatAppPath
-exports.checkWeChatStatus = async (mainWindow, weChatAppPath) => {
-    if (!checkWeChatAppDirectory(weChatAppPath)) {
+async function checkWeChatStatus(mainWindow, weChatAppPath) {
+    // 1+ 运行中的进程数
+    // 0 未运行
+    // -1 weChatAppPath 不存在
+    // -2 未在 weChatAppPath 下找到可执行文件
+    // -10000 未知错误
+    let weChatStatus = -10000;
+
+    if (!isWeChatAppDirectoryValid(weChatAppPath)) {
         weChatAppPath = '';
         weChatStatus = -1;
-    } else if (!checkWeChatExecutableFile(weChatAppPath)) {
+    } else if (!isWeChatExecutableFileValid(weChatAppPath)) {
         weChatStatus = -2;
     } else {
         const binPath = path.join(weChatAppPath, 'Contents', 'MacOS', 'WeChat');
@@ -71,7 +72,13 @@ exports.checkWeChatStatus = async (mainWindow, weChatAppPath) => {
 
         weChatStatus = WeChatRunningProcessCount;
     }
+
     mainWindow.webContents.send('wechat-status', weChatStatus);
     mainWindow.webContents.send('wechat-path', weChatAppPath);
 }
 
+module.exports = {
+    findWeChatAppPath,
+    selectWeChatAppThroughDialog,
+    checkWeChatStatus
+}
