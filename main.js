@@ -81,12 +81,12 @@ app.on('before-quit', () => {
     store.set('wechatOpenCount', weChatOpenCount);
 });
 
-ipcMain.on('not-run-command', (event, weChatStatusText) => {
-    console.log('weChatStatusText:', weChatStatusText);
+ipcMain.on('not-run-command', (event, weChatStatus) => {
+    console.log('weChatStatus:', weChatStatus);
     dialog.showMessageBox(mainWindow, {
         type: 'info',
         title: 'Can not run now',
-        message: `${weChatStatusText}`,
+        message: `${weChatStatus}`,
         buttons: ['OK'],
     });
 });

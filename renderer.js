@@ -2,22 +2,16 @@ const { ipcRenderer } = require('electron');
 const i18next = require('i18next');
 const Backend = require('i18next-fs-backend');
 
-const runCommandButton = document.getElementById('runCommandButton');
-const settingsButton = document.getElementById('settingsButton');
-const selectWeChatPathButton = document.getElementById('selectWeChatPath');
-const weChatAppPathInput = document.getElementById('weChatPath');
-const weChatOpenCountInput = document.getElementById('weChatOpenCount');
+const duoweiTitle = document.getElementById('title');
+const duoweiHeadline = document.getElementById('headline');
 const weChatStatusText = document.getElementById('wechat-status');
-
-i18next
-    .use(Backend)
-    .init({
-        lng: 'zh', // 默认语言
-        fallbackLng: 'en', // 如果当前语言的翻译不存在，将使用此备用语言
-        backend: {
-            loadPath: __dirname + '/locales/{{lng}}/translation.json'
-        }
-    });
+const weChatPathLabel = document.querySelector('label[for="wechat-path-input"]')
+const weChatPathInput = document.getElementById('wechat-path-input');
+const selectWeChatPathButton = document.getElementById('select-wechat-path-button');
+const weChatCountLabel = document.querySelector('label[for="wechat-count-input"]')
+const weChatCountInput = document.getElementById('wechat-count-input');
+const runCommandButton = document.getElementById('run-command-button');
+const settingsButton = document.getElementById('settings-button');
 
 // 1+ 运行中的进程数
 // 0 未运行
@@ -29,8 +23,8 @@ let weChatStatus = -10000;
 function updateWeChatStatus(status) {
     weChatStatus = status;
     let statusText = '';
-    let buttonColor = '';
-    console.log('weChatStatus:', weChatStatus);
+    let buttonColor = 'gray';
+
     switch (weChatStatus) {
         case 0:
             statusText = i18next.t('status_0');
@@ -38,25 +32,42 @@ function updateWeChatStatus(status) {
             break;
         case -1:
             statusText = i18next.t('status_1');
-            buttonColor = 'gray';
             break;
         case -2:
             statusText = i18next.t('status_2');
-            buttonColor = 'gray';
             break;
         default:
             statusText = `${weChatStatus} ` + i18next.t('status_3');
-            buttonColor = 'gray';
     }
 
-    console.log('statusText:', statusText);
     weChatStatusText.textContent = statusText;
     runCommandButton.style.background = buttonColor;
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+    i18next
+        .use(Backend)
+        .init({
+            lng: 'zh',
+            fallbackLng: 'en',
+            backend: {
+                loadPath: __dirname + '/locales/{{lng}}/translation.json'
+            }
+        }, function(err, t) {
+            if (err) return console.log('something went wrong loading', err);
+            
+            // 在此回调函数中进行翻译，因为此时可以确保i18next已经初始化完成
+            duoweiTitle.innerText = t('title');
+            duoweiHeadline.innerText = t('headline');
+            weChatPathLabel.innerText = t('wechat_path_label');
+            selectWeChatPathButton.innerText = t('select_wechat_path_button');
+            weChatCountLabel.innerText = t('wechat_count_label');
+            runCommandButton.innerText = t('run_command_button');
+            settingsButton.innerText = t('settings_button');
+        });
+
     ipcRenderer.on('wechat-path', (event, path) => {
-        weChatAppPathInput.value = path;
+        weChatPathInput.value = path;
     });
 
     // createMainWindow() 的时候这个传递 weChatAppPath
@@ -66,12 +77,12 @@ window.addEventListener('DOMContentLoaded', () => {
         updateWeChatStatus(status);
     });
 
-    weChatAppPathInput.addEventListener('change', () => {
-        ipcRenderer.send('wechat-path-changed', weChatAppPathInput.value);
+    weChatPathInput.addEventListener('change', () => {
+        ipcRenderer.send('wechat-path-changed', weChatPathInput.value);
     });
 
-    weChatOpenCountInput.addEventListener('change', () => {
-        ipcRenderer.send('wechat-open-count-changed', weChatOpenCountInput.value);
+    weChatCountInput.addEventListener('change', () => {
+        ipcRenderer.send('wechat-open-count-changed', weChatCountInput.value);
     });
 
     selectWeChatPathButton.addEventListener('click', () => {
@@ -80,9 +91,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     runCommandButton.addEventListener('click', () => {
         if (weChatStatus !== 0 ) {
-            ipcRenderer.send('not-run-command', weChatStatusText.textContent);
+            ipcRenderer.send('not-run-command', weChatStatus.textContent);
         } else {
-            ipcRenderer.send('run-command', weChatOpenCountInput.value, weChatAppPathInput.value);
+            ipcRenderer.send('run-command', weChatCountInput.value, weChatPathInput.value);
         }
     });
 

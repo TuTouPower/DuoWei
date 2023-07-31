@@ -1,26 +1,32 @@
 <!DOCTYPE html>
-<html lang="en" xml:lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>WeChat Multi-opener</title>
+    <title id="title">1WeChat Multi-opener</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <h1>WeChat Multi-opener</h1>
-    <text id="wechat-status">666</text>
-    <div class="centered-container">
-        <div class="input-container">
-            <label for="weChatPath">WeChat Path:</label>
-            <input id="weChatPath" type="text">
-            <button id="selectWeChatPath">Select Path</button>
+    <header>
+        <h1 id="headline">3WeChat Multi-opener</h1>
+    </header>
+
+    <main>
+        <p id="wechat-status">666</p>
+        <div class="centered-container">
+            <div class="input-group">
+                <label for="wechat-path-input">3WeChat Path:</label>
+                <input id="wechat-path-input" type="text">
+                <button id="select-wechat-path-button">4Select Path</button>
+            </div>
+            <div class="input-group">
+                <label for="wechat-count-input">5WeChat Count:</label>
+                <input id="wechat-count-input" type="number" min="1" step="1" value="2">
+            </div>
         </div>
-        <div class="input-container">
-            <label for="weChatOpenCount">WeChat Count:</label>
-            <input id="weChatOpenCount" type="number" min="1" step="1" value="2">
-        </div>
-    </div>
-    <button id="runCommandButton">Run</button>
-    <button id="settingsButton">Settings</button>
+        <button id="run-command-button">6Run</button>
+        <button id="settings-button">7Settings</button>
+    </main>
+
     <script src="renderer.js"></script>
 </body>
 </html>
