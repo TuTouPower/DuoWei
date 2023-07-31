@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const find = require('find-process');
 
-let weChatRunningProcessCount = 0;
+let weChatRunningProcessCount = -1;
 
 exports.findWeChatApp = async () => {
     const applicationsPath = '/Applications';
@@ -47,9 +47,10 @@ exports.selectWeChatApp = async (dialog, mainWindow) => {
     return null;
 };
 
-exports.checkWeChatProcess = async (mainWindow) => {
-    const binPath = '/Applications/WeChat.app/Contents/MacOS/WeChat';
-    const cmdPath = '/Applications/WeChat.app/Contents/MacOS/WeChat';
+// TODO: weChatPath
+exports.checkWeChatProcess = async (mainWindow, weChatPath) => {
+    const binPath = path.join(weChatPath, 'Contents', 'MacOS', 'WeChat');
+    const cmdPath = path.join(weChatPath, 'Contents', 'MacOS', 'WeChat');
 
     const list = await find('name', 'WeChat', true);
     const specificProcessList = list.filter(proc => proc.bin === binPath && proc.cmd === cmdPath);

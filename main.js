@@ -43,24 +43,34 @@ app.whenReady().then(async () => {
     createMainWindow();
 
     if (!weChatPath) {
-        await dialog.showMessageBox(mainWindow, {
+        const response = await dialog.showMessageBox(mainWindow, {
             type: 'info',
             title: 'WeChat not found',
             message: 'WeChat app is not found, please select the path in the following dialog.',
-            buttons: ['OK']
+            buttons: ['Choose Now', 'Choose later'],
+            defaultId: 0,
+            cancelId: 1,
         });
-        weChatPath = await selectWeChatApp(dialog, mainWindow);
-    }
 
-    mainWindow.webContents.send('wechat-path', weChatPath);
-
-    if (!checkExecutableFile(weChatPath)) {
-        dialog.showErrorBox('Error', 'The selected wechat app does not contain the executable file.');
+        if (response.response === 0) { // 如果用户选择 "Choose Now"
+            weChatPath = await selectWeChatApp(dialog, mainWindow);
+            mainWindow.webContents.send('wechat-path', weChatPath);
+            if (!checkExecutableFile(weChatPath)) {
+                dialog.showErrorBox('Error', 
+                        `The selected wechat app does not contain the executable file. ${weChatPath}/Contents/MacOS/WeChat`);
+            }
+        }
+    } else {
+        mainWindow.webContents.send('wechat-path', weChatPath);
+        if (!checkExecutableFile(weChatPath)) {
+            dialog.showErrorBox('Error', 
+                    `The selected wechat app does not contain the executable file. ${weChatPath}/Contents/MacOS/WeChat`);
+        }
     }
 
     setInterval(async () => {
         try {
-            await checkWeChatProcess(mainWindow);
+            await checkWeChatProcess(mainWindow, weChatPath);
         } catch (error) {
             console.error('Error in checking WeChat process:', error);
         }
