@@ -2,7 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const find = require('find-process');
 
-let weChatRunningProcessCount = -1;
+// -1 未在 WeChatPath 下找到可执行文件
+// 0 未运行
+// 1+ 运行中的进程数
+let weChatStatus = -10000;
 
 exports.findWeChatApp = async () => {
     const applicationsPath = '/Applications';
@@ -19,8 +22,8 @@ exports.findWeChatApp = async () => {
     return null;
 };
 
-exports.checkExecutableFile = (appPath) => {
-    const executableFilePath = path.join(appPath, 'Contents', 'MacOS', 'WeChat');
+function checkExecutableFile (weChatPath) {
+    const executableFilePath = path.join(weChatPath, 'Contents', 'MacOS', 'WeChat');
     try {
         return fs.existsSync(executableFilePath);
     } catch (err) {
@@ -48,18 +51,22 @@ exports.selectWeChatApp = async (dialog, mainWindow) => {
 };
 
 // TODO: weChatPath
-exports.checkWeChatProcess = async (mainWindow, weChatPath) => {
-    const binPath = path.join(weChatPath, 'Contents', 'MacOS', 'WeChat');
-    const cmdPath = path.join(weChatPath, 'Contents', 'MacOS', 'WeChat');
+exports.checkWeChatStatus = async (mainWindow, weChatPath) => {
+    if (!checkExecutableFile(weChatPath)) {
+        weChatStatus = -1;
+        mainWindow.webContents.send('wechat-status', weChatStatus);
+    } else {
+        const binPath = path.join(weChatPath, 'Contents', 'MacOS', 'WeChat');
 
-    const list = await find('name', 'WeChat', true);
-    const specificProcessList = list.filter(proc => proc.bin === binPath && proc.cmd === cmdPath);
-    const nowWeChatRunningProcessCount = specificProcessList.length;
+        const list = await find('name', 'WeChat', true);
+        const specificProcessList = list.filter(proc => proc.bin === binPath);
+        const WeChatRunningProcessCount = specificProcessList.length;
 
-    // 如果 WeChat 的运行状态发生了变化，发送一个 IPC 事件到前端
-    if (weChatRunningProcessCount !== nowWeChatRunningProcessCount) {
-        weChatRunningProcessCount = nowWeChatRunningProcessCount;
-        mainWindow.webContents.send('wechat-status', weChatRunningProcessCount);
+        // 如果 WeChat 的运行状态发生了变化，发送一个 IPC 事件到前端
+        if (weChatStatus !== WeChatRunningProcessCount) {
+            weChatStatus = WeChatRunningProcessCount;
+            mainWindow.webContents.send('wechat-status', weChatStatus);
+        }
     }
 }
 

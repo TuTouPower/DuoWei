@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { findWeChatApp, checkExecutableFile, selectWeChatApp, checkWeChatProcess } = require('./utils.js');
+const { findWeChatApp, selectWeChatApp, checkWeChatStatus } = require('./utils.js');
 const { exec } = require('child_process');
 
 // 在这里声明全局变量
@@ -55,22 +55,14 @@ app.whenReady().then(async () => {
         if (response.response === 0) { // 如果用户选择 "Choose Now"
             weChatPath = await selectWeChatApp(dialog, mainWindow);
             mainWindow.webContents.send('wechat-path', weChatPath);
-            if (!checkExecutableFile(weChatPath)) {
-                dialog.showErrorBox('Error', 
-                        `The selected wechat app does not contain the executable file. ${weChatPath}/Contents/MacOS/WeChat`);
-            }
         }
     } else {
         mainWindow.webContents.send('wechat-path', weChatPath);
-        if (!checkExecutableFile(weChatPath)) {
-            dialog.showErrorBox('Error', 
-                    `The selected wechat app does not contain the executable file. ${weChatPath}/Contents/MacOS/WeChat`);
-        }
     }
 
     setInterval(async () => {
         try {
-            await checkWeChatProcess(mainWindow, weChatPath);
+            await checkWeChatStatus(mainWindow, weChatPath);
         } catch (error) {
             console.error('Error in checking WeChat process:', error);
         }
@@ -105,10 +97,7 @@ ipcMain.on('run-command', (event, count, weChatPath) => {
 ipcMain.on('set-wechat-path-clicked', async (event) => {
     weChatPath = await selectWeChatApp(dialog, mainWindow);
     mainWindow.webContents.send('wechat-path', weChatPath);
-    if (!checkExecutableFile(weChatPath)) {
-        dialog.showErrorBox('Error', 
-                `The selected wechat app does not contain the executable file. ${weChatPath}/Contents/MacOS/WeChat`);
-    }
+    checkWeChatStatus(mainWindow, weChatPath);
 });
 
 ipcMain.on('open-settings', (event) => {

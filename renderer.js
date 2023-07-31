@@ -31,10 +31,13 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     ipcRenderer.on('wechat-status', (event, weChatRunningProcessCount) => {
-        if (weChatRunningProcessCount == 0 ){
+        if (weChatRunningProcessCount < 0 ){
+            weChatStatusElement.textContent = 'Do not find WeChat executable file in the selected path.';
+        } else if (weChatRunningProcessCount == 0 ){
             weChatStatusElement.textContent = 'WeChat is not running';
         } else {
-            weChatStatusElement.textContent =  `${weChatRunningProcessCount} WeChat is running;`;
+            weChatStatusElement.textContent =
+                    `${weChatRunningProcessCount} WeChat is running, please exit WeChat and then open WeChat more`;
         }
     });
     
