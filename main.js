@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 // 在这里声明全局变量
 let mainWindow;
 let settingsWindow;
-let weChatPath;
+let weChatAppPath;
 
 function createMainWindow () {
     mainWindow = new BrowserWindow({
@@ -38,35 +38,29 @@ function createSettingsWindow () {
 
 app.whenReady().then(async () => {
 
-    weChatPath = await findWeChatApp();
+    weChatAppPath = await findWeChatApp();
 
     createMainWindow();
 
-    if (!weChatPath) {
-        const response = await dialog.showMessageBox(mainWindow, {
-            type: 'info',
-            title: 'WeChat not found',
-            message: 'WeChat app is not found, please select the path in the following dialog.',
-            buttons: ['Choose Now', 'Choose later'],
-            defaultId: 0,
-            cancelId: 1,
-        });
-
-        if (response.response === 0) { // 如果用户选择 "Choose Now"
-            weChatPath = await selectWeChatApp(dialog, mainWindow);
-            mainWindow.webContents.send('wechat-path', weChatPath);
+    // 必须这样写前几次执行的才快，不知道为什么
+    let count = 0;
+    const limit = 2;
+    const intervalId = setInterval( async () => {
+        await checkWeChatStatus(mainWindow, weChatAppPath);
+        count += 1;
+        if (count === limit) {
+            clearInterval(intervalId); // 清除定时器，停止执行
         }
-    } else {
-        mainWindow.webContents.send('wechat-path', weChatPath);
-    }
+    }, 10);
 
+    // 每隔一秒执行一次
     setInterval(async () => {
         try {
-            await checkWeChatStatus(mainWindow, weChatPath);
+            await checkWeChatStatus(mainWindow, weChatAppPath);
         } catch (error) {
             console.error('Error in checking WeChat process:', error);
         }
-    }, 1000);    
+    }, 1000);
 
 });
 
@@ -88,8 +82,8 @@ ipcMain.on('not-run-command', (event, weChatStatusText) => {
     });
 });
 
-ipcMain.on('run-command', (event, count, weChatPath) => {
-    let runWeChatShell = `nohup ${weChatPath}/Contents/MacOS/WeChat > /dev/null 2>&1 &`;
+ipcMain.on('run-command', (event, count, weChatAppPath) => {
+    let runWeChatShell = `nohup ${weChatAppPath}/Contents/MacOS/WeChat > /dev/null 2>&1 &`;
 
     // 执行指定次数的命令
     for (let i = 0; i < count; i++) {
@@ -105,9 +99,8 @@ ipcMain.on('run-command', (event, count, weChatPath) => {
 });
 
 ipcMain.on('set-wechat-path-clicked', async (event) => {
-    weChatPath = await selectWeChatApp(dialog, mainWindow);
-    mainWindow.webContents.send('wechat-path', weChatPath);
-    checkWeChatStatus(mainWindow, weChatPath);
+    weChatAppPath = await selectWeChatApp(dialog, mainWindow);
+    checkWeChatStatus(mainWindow, weChatAppPath);
 });
 
 ipcMain.on('open-settings', (event) => {
@@ -115,9 +108,9 @@ ipcMain.on('open-settings', (event) => {
 });
 
 ipcMain.on('get-wechat-path', (event) => {
-    event.reply('wechat-path', weChatPath);
+    event.reply('wechat-path', weChatAppPath);
 });
 
 ipcMain.on('set-wechat-path', (event, newPath) => {
-    weChatPath = newPath;
+    weChatAppPath = newPath;
 });

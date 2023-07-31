@@ -2,7 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const find = require('find-process');
 
-// -1 未在 WeChatPath 下找到可执行文件
+
+// -2 未在 weChatAppPath 下找到可执行文件
+// -1 weChatAppPath 不存在
 // 0 未运行
 // 1+ 运行中的进程数
 let weChatStatus = -10000;
@@ -22,16 +24,6 @@ exports.findWeChatApp = async () => {
     return null;
 };
 
-function checkExecutableFile (weChatPath) {
-    const executableFilePath = path.join(weChatPath, 'Contents', 'MacOS', 'WeChat');
-    try {
-        return fs.existsSync(executableFilePath);
-    } catch (err) {
-        console.error(err);
-    }
-    return false;
-};
-
 exports.selectWeChatApp = async (dialog, mainWindow) => {
     try {
         const result = await dialog.showOpenDialog(mainWindow, {
@@ -41,8 +33,8 @@ exports.selectWeChatApp = async (dialog, mainWindow) => {
             filters: [{ name: 'Applications', extensions: ['app'] }]
         });
         if (!result.canceled) {
-            const appPath = result.filePaths[0];
-            return appPath;
+            const weChatAppPath = result.filePaths[0];
+            return weChatAppPath;
         }
     } catch (err) {
         console.error(err);
@@ -50,23 +42,36 @@ exports.selectWeChatApp = async (dialog, mainWindow) => {
     return null;
 };
 
-// TODO: weChatPath
-exports.checkWeChatStatus = async (mainWindow, weChatPath) => {
-    if (!checkExecutableFile(weChatPath)) {
-        weChatStatus = -1;
-        mainWindow.webContents.send('wechat-status', weChatStatus);
-    } else {
-        const binPath = path.join(weChatPath, 'Contents', 'MacOS', 'WeChat');
+function checkWeChatAppDirectory (weChatAppPath) {
+    return !!weChatAppPath;
+};
 
+function checkWeChatExecutableFile (weChatAppPath) {
+    const executableFilePath = path.join(weChatAppPath, 'Contents', 'MacOS', 'WeChat');
+    try {
+        return fs.existsSync(executableFilePath);
+    } catch (err) {
+        console.error(err);
+    }
+    return false;
+};
+
+// TODO: weChatAppPath
+exports.checkWeChatStatus = async (mainWindow, weChatAppPath) => {
+    if (!checkWeChatAppDirectory(weChatAppPath)) {
+        weChatAppPath = '';
+        weChatStatus = -1;
+    } else if (!checkWeChatExecutableFile(weChatAppPath)) {
+        weChatStatus = -2;
+    } else {
+        const binPath = path.join(weChatAppPath, 'Contents', 'MacOS', 'WeChat');
         const list = await find('name', 'WeChat', true);
         const specificProcessList = list.filter(proc => proc.bin === binPath);
         const WeChatRunningProcessCount = specificProcessList.length;
 
-        // 如果 WeChat 的运行状态发生了变化，发送一个 IPC 事件到前端
-        if (weChatStatus !== WeChatRunningProcessCount) {
-            weChatStatus = WeChatRunningProcessCount;
-            mainWindow.webContents.send('wechat-status', weChatStatus);
-        }
+        weChatStatus = WeChatRunningProcessCount;
     }
+    mainWindow.webContents.send('wechat-status', weChatStatus);
+    mainWindow.webContents.send('wechat-path', weChatAppPath);
 }
 
