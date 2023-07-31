@@ -78,6 +78,16 @@ app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
 });
 
+ipcMain.on('not-run-command', (event, weChatStatusText) => {
+    console.log('weChatStatusText:', weChatStatusText);
+    dialog.showMessageBox(mainWindow, {
+        type: 'info',
+        title: 'Can not run now',
+        message: `${weChatStatusText}`,
+        buttons: ['OK'],
+    });
+});
+
 ipcMain.on('run-command', (event, count, weChatPath) => {
     let runWeChatShell = `nohup ${weChatPath}/Contents/MacOS/WeChat > /dev/null 2>&1 &`;
 

@@ -4,7 +4,9 @@ const settingsButton = document.getElementById('settingsButton');
 const setWeChatPathButton = document.getElementById('setWeChatPath');
 const weChatCountInput = document.getElementById('wechatCount');
 const weChatPathInput = document.getElementById('wechatPath');
-const weChatStatusElement = document.getElementById('wechat-status');
+const weChatStatusText = document.getElementById('wechat-status');
+
+let weChatStatus = -10000; 
 
 window.addEventListener('DOMContentLoaded', () => {
     ipcRenderer.on('wechat-path', (event, path) => {
@@ -19,7 +21,12 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     runCommandButton.addEventListener('click', () => {
-        ipcRenderer.send('run-command', weChatCountInput.value, weChatPathInput.value);
+        if (weChatStatus !== 0 ) {
+            runCommandButton.style.background = 'gray';
+            ipcRenderer.send('not-run-command', weChatStatusText.textContent);
+        } else {
+            ipcRenderer.send('run-command', weChatCountInput.value, weChatPathInput.value);
+        }
     });    
 
     settingsButton.addEventListener('click', () => {
@@ -30,14 +37,18 @@ window.addEventListener('DOMContentLoaded', () => {
         ipcRenderer.send('set-wechat-path-clicked');
     });
 
-    ipcRenderer.on('wechat-status', (event, weChatRunningProcessCount) => {
-        if (weChatRunningProcessCount < 0 ){
-            weChatStatusElement.textContent = 'Do not find WeChat executable file in the selected path.';
-        } else if (weChatRunningProcessCount == 0 ){
-            weChatStatusElement.textContent = 'WeChat is not running';
+    ipcRenderer.on('wechat-status', (event, status) => {
+        weChatStatus = status
+        if (weChatStatus < 0 ){
+            weChatStatusText.textContent = 'Do not find WeChat executable file in the selected path. Please select again';
+            runCommandButton.style.background = 'gray';
+        } else if (weChatStatus == 0 ){
+            weChatStatusText.textContent = 'WeChat is not running';
+            runCommandButton.style.background = '#007BFF';
         } else {
-            weChatStatusElement.textContent =
-                    `${weChatRunningProcessCount} WeChat is running, please exit WeChat and then open WeChat more`;
+            weChatStatusText.textContent =
+                    `${weChatStatus} WeChat is running, please exit WeChat and then open WeChat more`;
+            runCommandButton.style.background = 'gray';
         }
     });
     
