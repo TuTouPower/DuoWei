@@ -120,7 +120,7 @@ ipcMain.on('get-wechat-path', (event) => {
     event.reply('wechat-path', weChatAppPath);
 });
 
-ipcMain.on('wechat-open-count-changed', (event, newCount) => {
+ipcMain.on('wechat-count-changed', (event, newCount) => {
     weChatOpenCount = newCount;
 });
 

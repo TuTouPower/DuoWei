@@ -82,7 +82,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     weChatCountInput.addEventListener('change', () => {
-        ipcRenderer.send('wechat-open-count-changed', weChatCountInput.value);
+        ipcRenderer.send('wechat-count-changed', weChatCountInput.value);
     });
 
     selectWeChatPathButton.addEventListener('click', () => {
