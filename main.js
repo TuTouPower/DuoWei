@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { findWeChatApp, checkExecutableFile, selectWeChatApp } = require('./utils.js');
+const { findWeChatApp, checkExecutableFile, selectWeChatApp, checkWeChatProcess } = require('./utils.js');
 const { exec } = require('child_process');
 
 // 在这里声明全局变量
@@ -16,7 +16,7 @@ function createMainWindow () {
             contextIsolation: false,
         }
     });
-    
+
     // 开发者工具
     // mainWindow.webContents.openDevTools();
 
@@ -57,6 +57,14 @@ app.whenReady().then(async () => {
     if (!checkExecutableFile(weChatPath)) {
         dialog.showErrorBox('Error', 'The selected wechat app does not contain the executable file.');
     }
+
+    setInterval(async () => {
+        try {
+            await checkWeChatProcess(mainWindow);
+        } catch (error) {
+            console.error('Error in checking WeChat process:', error);
+        }
+    }, 1000);    
 
 });
 

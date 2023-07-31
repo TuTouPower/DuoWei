@@ -3,6 +3,7 @@ const runCommandButton = document.getElementById('runCommandButton');
 const settingsButton = document.getElementById('settingsButton');
 const weChatCountInput = document.getElementById('wechatCount');
 const weChatPathInput = document.getElementById('wechatPath');
+const weChatStatusElement = document.getElementById('wechat-status');
 
 window.addEventListener('DOMContentLoaded', () => {
     ipcRenderer.on('wechat-path', (event, path) => {
@@ -23,4 +24,13 @@ window.addEventListener('DOMContentLoaded', () => {
     settingsButton.addEventListener('click', () => {
         ipcRenderer.send('open-settings');
     });
+
+    ipcRenderer.on('wechat-status', (event, weChatRunningProcessCount) => {
+        if (weChatRunningProcessCount == 0 ){
+            weChatStatusElement.textContent = 'WeChat is not running';
+        } else {
+            weChatStatusElement.textContent =  `${weChatRunningProcessCount} WeChat is running;`;
+        }
+    });
+    
 });

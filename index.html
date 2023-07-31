@@ -7,6 +7,7 @@
 </head>
 <body>
     <h1>WeChat Multi-opener</h1>
+    <text id="wechat-status">正在查找是否有微信进程在运行</text>
     <div class="input-container">
         <label for="wechatPath">WeChat Path:</label>
         <input id="wechatPath" type="text">
@@ -14,8 +15,8 @@
     <div class="input-container">
         <label for="wechatCount">WeChat Count:</label>
         <input id="wechatCount" type="number" min="1" step="1">
-        <button id="runCommandButton">Run</button>
     </div>
+    <button id="runCommandButton">Run</button>
     <button id="settingsButton">Settings</button>
     <script src="renderer.js"></script>
 </body>
