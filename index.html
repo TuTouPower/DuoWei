@@ -6,26 +6,31 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1 id="headline">WeChat Multi-opener</h1>
-    </header>
+    <div id="container">
+        <header>
+            <h1 id="headline">WeChat Multi-opener</h1>
+        </header>
 
-    <main>
         <p id="wechat-status">Checking the operation status of WeChat.</p>
-        <div class="centered-container">
-            <div class="input-group">
-                <label for="wechat-path-input">WeChat Path:</label>
-                <input id="wechat-path-input" type="text">
-                <button id="select-wechat-path-button">Select Path</button>
-            </div>
-            <div class="input-group">
-                <label for="wechat-count-input">WeChat Count:</label>
-                <input id="wechat-count-input" type="number" min="1" step="1" value="2">
-            </div>
-        </div>
-        <button id="run-command-button">Run</button>
-        <button id="settings-button">Settings</button>
-    </main>
+        
+        <main>
+            <section>
+                <div class="input-group">
+                    <label for="wechat-path-input">WeChat Installation Path: </label>
+                    <input id="wechat-path-input" type="text">
+                    <button id="select-wechat-path-button">Select</button>
+                </div>
+                <div class="input-group">
+                    <label for="wechat-count-input">WeChat Multi-open Count: </label>
+                    <input id="wechat-count-input" type="number" min="1" step="1" value="2">
+                    <button id="run-command-button">   Run  </button>
+                </div>
+            </section>
+            <nav>
+                <button id="settings-button">Settings</button>
+            </nav>
+        </main>
+    </div>
 
     <script src="renderer.js"></script>
 </body>

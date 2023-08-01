@@ -1,9 +1,9 @@
 {
     "title": "DuoWei: WeChat Multi-opener",
     "headline": "DuoWei: WeChat Multi-opener",
-    "wechat_path_label": "WeChat Path:",
-    "select_wechat_path_button": "Select Path",
-    "wechat_count_label": "WeChat Open Count:",
+    "wechat_path_label": "WeChat Path: ",
+    "select_wechat_path_button": "Select",
+    "wechat_count_label": "WeChat Count: ",
     "run_command_button": "Run",
     "settings_button": "Settings",
     "wechat_status_positive_num": "WeChat is running, please exit, and then execute this program to open more WeChat.",

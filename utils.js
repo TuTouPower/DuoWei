@@ -29,6 +29,8 @@ async function selectWeChatAppThroughDialog(dialog, mainWindow) {
         if (!result.canceled) {
             const weChatAppPath = result.filePaths[0];
             return weChatAppPath;
+        } else {
+            return null;
         }
     } catch (err) {
         console.error(err);
@@ -73,12 +75,21 @@ async function checkWeChatStatus(mainWindow, weChatAppPath) {
         weChatStatus = WeChatRunningProcessCount;
     }
 
-    mainWindow.webContents.send('wechat-status', weChatStatus);
-    mainWindow.webContents.send('wechat-path', weChatAppPath);
+    return {appPath: weChatAppPath, status: weChatStatus};
+}
+
+async function editWeChatPathAndStatus(mainWindow, weChatAppPath, weChatStatus) {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('wechat-status', weChatStatus);
+        mainWindow.webContents.send('wechat-path', weChatAppPath);
+    } else {
+        console.error('mainWindow is destroyed');
+    }
 }
 
 module.exports = {
     findWeChatAppPath,
     selectWeChatAppThroughDialog,
-    checkWeChatStatus
+    checkWeChatStatus,
+    editWeChatPathAndStatus
 }

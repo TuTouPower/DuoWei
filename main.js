@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus } = require('./utils.js');
+const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus } = require('./utils.js');
 const { exec } = require('child_process');
 const Store = require('electron-store');
 const i18next = require('i18next');
@@ -38,7 +38,7 @@ function createWindow(config) {
 }
 
 function createMainWindow () {
-    mainWindow = createWindow({width: 600, height: 400, htmlFile: 'index.html'});
+    mainWindow = createWindow({width: 520, height: 300, htmlFile: 'index.html'});
 }
 
 function createSettingsWindow () {
@@ -55,7 +55,8 @@ app.whenReady().then(async () => {
     // Wrap checkWeChatStatus in a function for recursion
     const checkWeChatStatusRepeatedly = async () => {
         try {
-            await checkWeChatStatus(mainWindow, weChatAppPath);
+            result = await checkWeChatStatus(mainWindow, weChatAppPath);
+            editWeChatPathAndStatus(mainWindow, result.appPath, result.status);
         } catch (error) {
             console.error('Error in checking WeChat process:', error);
         }
@@ -132,7 +133,10 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
 
 ipcMain.on('set-wechat-path-clicked', async (event) => {
     weChatAppPath = await selectWeChatAppThroughDialog(dialog, mainWindow);
-    checkWeChatStatus(mainWindow, weChatAppPath);
+    if (weChatAppPath !== null) {
+        result = await checkWeChatStatus(mainWindow, weChatAppPath);
+        editWeChatPathAndStatus(mainWindow, result.appPath, result.status);
+    }
 });
 
 ipcMain.on('open-settings', (event) => {

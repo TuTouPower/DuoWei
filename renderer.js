@@ -23,25 +23,36 @@ let weChatStatus = -10000;
 function updateWeChatStatus(status) {
     weChatStatus = status;
     let statusText = '';
-    let buttonColor = 'gray';
+    let activeButtonColor = '#007BFF';
+    let inactiveButtonColor = 'gray';
+    let selectWeChatPathButtonColor = '';
+    let runCommandButtonColor = '';
 
     switch (weChatStatus) {
         case 0:
             statusText = i18next.t('wechat_status_0');
-            buttonColor = '#007BFF';
+            runCommandButtonColor = activeButtonColor;
+            selectWeChatPathButtonColor = inactiveButtonColor;
             break;
         case -1:
             statusText = i18next.t('wechat_status_negative_1');
+            runCommandButtonColor = inactiveButtonColor;
+            selectWeChatPathButtonColor = activeButtonColor;
             break;
         case -2:
             statusText = i18next.t('wechat_status_negative_2');
+            runCommandButtonColor = inactiveButtonColor;
+            selectWeChatPathButtonColor = activeButtonColor;
             break;
         default:
             statusText = `${weChatStatus} ` + i18next.t('wechat_status_positive_num');
+            runCommandButtonColor = inactiveButtonColor;
+            selectWeChatPathButtonColor = inactiveButtonColor;
     }
 
     weChatStatusText.textContent = statusText;
-    runCommandButton.style.background = buttonColor;
+    runCommandButton.style.background = runCommandButtonColor;
+    selectWeChatPathButton.style.background = selectWeChatPathButtonColor;
 }
 
 window.addEventListener('DOMContentLoaded', () => {
