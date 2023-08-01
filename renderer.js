@@ -17,7 +17,7 @@ const settingsButton = document.getElementById('settings-button');
 // 0 未运行
 // -1 weChatAppPath 不存在
 // -2 未在 weChatAppPath 下找到可执行文件
-// -10000 未知错误
+// -10000 初始值
 let weChatStatus = -10000;
 
 function updateWeChatStatus(status) {
@@ -27,17 +27,17 @@ function updateWeChatStatus(status) {
 
     switch (weChatStatus) {
         case 0:
-            statusText = i18next.t('status_0');
+            statusText = i18next.t('wechat_status_0');
             buttonColor = '#007BFF';
             break;
         case -1:
-            statusText = i18next.t('status_1');
+            statusText = i18next.t('wechat_status_negative_1');
             break;
         case -2:
-            statusText = i18next.t('status_2');
+            statusText = i18next.t('wechat_status_negative_2');
             break;
         default:
-            statusText = `${weChatStatus} ` + i18next.t('status_3');
+            statusText = `${weChatStatus} ` + i18next.t('wechat_status_positive_num');
     }
 
     weChatStatusText.textContent = statusText;
@@ -59,6 +59,7 @@ window.addEventListener('DOMContentLoaded', () => {
             // 在此回调函数中进行翻译，因为此时可以确保i18next已经初始化完成
             duoweiTitle.innerText = t('title');
             duoweiHeadline.innerText = t('headline');
+            weChatStatusText.innerText = t('wechat_status_negative_10000');
             weChatPathLabel.innerText = t('wechat_path_label');
             selectWeChatPathButton.innerText = t('select_wechat_path_button');
             weChatCountLabel.innerText = t('wechat_count_label');
