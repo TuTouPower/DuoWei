@@ -4,16 +4,31 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron --trace-warnings ."
+    "start": "electron --trace-warnings .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"  
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "v25.3.2"
+    "electron": "v25.3.2",
+    "electron-builder": "^24.6.3"
   },
   "dependencies": {
+    "find-process": "1.4.7",
+    "electron-store": "8.1.0",
     "i18next": "23.4.1",
     "i18next-fs-backend": "2.1.5"
+  },
+  "build": {
+    "appId": "com.xiaoxiaoguang.duowei",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "asar": false
   }
 }
