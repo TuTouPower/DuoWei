@@ -38,7 +38,7 @@ function createWindow(config) {
 }
 
 function createMainWindow () {
-    mainWindow = createWindow({width: 520, height: 300, htmlFile: 'index.html'});
+    mainWindow = createWindow({width: 520, height: 270, htmlFile: 'index.html'});
 }
 
 function createSettingsWindow () {
@@ -55,7 +55,7 @@ app.whenReady().then(async () => {
     // Wrap checkWeChatStatus in a function for recursion
     const checkWeChatStatusRepeatedly = async () => {
         try {
-            let result = await checkWeChatStatus(mainWindow, weChatAppPath);
+            let result = await checkWeChatStatus(weChatAppPath);
             editWeChatPathAndStatus(mainWindow, result.appPath, result.status);
         } catch (error) {
             console.error('Error in checking WeChat process:', error);
@@ -132,9 +132,10 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
 });
 
 async function handleSetWeChatPath() {
-    weChatAppPath = await selectWeChatAppThroughDialog(dialog, mainWindow);
-    if (weChatAppPath !== null) {
-        let result = await checkWeChatStatus(mainWindow, weChatAppPath);
+    let appPath = await selectWeChatAppThroughDialog(dialog, mainWindow);
+    if (appPath !== null) {
+        weChatAppPath = appPath;
+        let result = await checkWeChatStatus(weChatAppPath);
         editWeChatPathAndStatus(mainWindow, result.appPath, result.status);
     }
 }

@@ -30,6 +30,7 @@ async function selectWeChatAppThroughDialog(dialog, mainWindow) {
             const weChatAppPath = result.filePaths[0];
             return weChatAppPath;
         } else {
+            console.log('User canceled the dialog');
             return null;
         }
     } catch (err) {
@@ -52,7 +53,7 @@ function isWeChatExecutableFileValid(weChatAppPath) {
     }
 };
 
-async function checkWeChatStatus(mainWindow, weChatAppPath) {
+async function checkWeChatStatus(weChatAppPath) {
     // 1+ 运行中的进程数
     // 0 未运行
     // -1 weChatAppPath 不存在
