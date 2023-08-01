@@ -94,17 +94,40 @@ ipcMain.on('not-run-command', (event, weChatStatus) => {
 ipcMain.on('run-command', (event, count, weChatAppPath) => {
     let runWeChatShell = `nohup ${weChatAppPath}/Contents/MacOS/WeChat > /dev/null 2>&1 &`;
 
+    let promises = [];  // 存储所有的 promise
+
     // 执行指定次数的命令
     for (let i = 0; i < count; i++) {
-        exec(runWeChatShell, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`exec error: ${error}`);
-                return;
-            }
-            console.log(`stdout: ${stdout}`);
-            console.error(`stderr: ${stderr}`);
+        let promise = new Promise((resolve, reject) => {
+            exec(runWeChatShell, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    reject(error);  // 如果有错误，reject 这个 promise
+                } else {
+                    console.log(`stdout: ${stdout}`);
+                    console.error(`stderr: ${stderr}`);
+                    resolve();  // 如果没有错误，resolve 这个 promise
+                }
+            });
         });
+        promises.push(promise);
     }
+
+    // 等待所有 promise 完成
+    Promise.all(promises)
+        .then(() => {
+            // 如果所有命令都执行成功，弹出对话框并退出程序
+            dialog.showMessageBox({
+                message: i18next.t('success_message'),
+                buttons: [i18next.t('ok')]
+            }).then(() => {
+                app.quit();
+            });
+        })
+        .catch((error) => {
+            // 如果有命令执行失败，也弹出对话框
+            dialog.showErrorBox('Error', `${error.message} ` + i18next.t('error_message'));
+        });
 });
 
 ipcMain.on('set-wechat-path-clicked', async (event) => {

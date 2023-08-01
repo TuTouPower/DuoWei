@@ -9,5 +9,8 @@
     "status_0": "Please enter the number of WeChat to open and click the Run button.",
     "status_1": "WeChat path is empty. Please select it.",
     "status_2": "Do not find executable file in the path. Please select right path or reinstall WeChat.",
-    "status_3": "WeChat is running, please exit, and then execute this program to open more WeChat."
+    "status_3": "WeChat is running, please exit, and then execute this program to open more WeChat.",
+    "success_message": "WeChat Multi-opener success!",
+    "error_message": "WeChat Multi-opener error!",
+    "ok": "OK"
 }
