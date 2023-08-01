@@ -36,7 +36,6 @@ async function selectWeChatAppThroughDialog(dialog, mainWindow) {
         console.error(err);
         throw err;
     }
-    return null;
 };
 
 function isWeChatAppDirectoryValid(weChatAppPath) {

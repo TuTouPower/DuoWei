@@ -131,12 +131,16 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
         });
 });
 
-ipcMain.on('set-wechat-path-clicked', async (event) => {
+async function handleSetWeChatPath() {
     weChatAppPath = await selectWeChatAppThroughDialog(dialog, mainWindow);
     if (weChatAppPath !== null) {
         result = await checkWeChatStatus(mainWindow, weChatAppPath);
         editWeChatPathAndStatus(mainWindow, result.appPath, result.status);
     }
+}
+
+ipcMain.on('set-wechat-path-clicked', (event) => {
+    handleSetWeChatPath().catch(console.error);
 });
 
 ipcMain.on('open-settings', (event) => {
