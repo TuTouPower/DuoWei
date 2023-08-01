@@ -57,8 +57,8 @@ async function checkWeChatStatus(mainWindow, weChatAppPath) {
     // 0 未运行
     // -1 weChatAppPath 不存在
     // -2 未在 weChatAppPath 下找到可执行文件
-    // -10000 未知错误
-    let weChatStatus = -10000;
+    // -10000 初始值
+    let weChatStatus;
 
     if (!isWeChatAppDirectoryValid(weChatAppPath)) {
         weChatAppPath = '';
