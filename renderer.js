@@ -112,7 +112,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     runCommandButton.addEventListener('click', () => {
         if (weChatStatus !== 0 ) {
-            ipcRenderer.send('not-run-command', weChatStatus.textContent);
+            ipcRenderer.send('not-run-command', weChatStatusText.textContent);
         } else {
             ipcRenderer.send('run-command', weChatCountInput.value, weChatPathInput.value);
         }

@@ -68,7 +68,7 @@ section {
     min-width: 50px;
 }
 
-button {
+.input-group button {
     height: 30px;
     cursor: pointer;
     padding: 0 10px;
@@ -79,19 +79,19 @@ button {
     transition: background-color 0.3s ease;
 }
 
-.button-active {
+.input-group .button-active {
     background-color: #007BFF;
 }
 
-.button-inactive {
+.input-group .button-inactive {
     background-color: #d3d3d3;
 }
 
-.button-active:hover {
+.input-group .button-active:hover {
     background-color: #0056b3;
 }
 
-.button-inactive:hover {
+.input-group .button-inactive:hover {
     background-color: gray;
 }
 
