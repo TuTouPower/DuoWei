@@ -6,6 +6,8 @@
     "wechat_count_label": "WeChat Count: ",
     "run_command_button": "Run",
     "settings_button": "Settings",
+    "check_updates_button": "Check Updates",
+    "contact_us_button": "Contact Us",
     "wechat_status_positive_num": "WeChat is running, please exit, and then execute this program to open more WeChat.",
     "wechat_status_0": "Please enter the number of WeChat to open and click the Run button.",
     "wechat_status_negative_1": "WeChat path is empty. Please select it.",

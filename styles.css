@@ -79,18 +79,24 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
+.button-active {
+    background-color: #007BFF;
+}
+
+.button-inactive {
+    background-color: #d3d3d3;
+}
+
+.button-active:hover {
     background-color: #0056b3;
+}
+
+.button-inactive:hover {
+    background-color: gray;
 }
 
 nav {
     position: absolute;
-    top: 10px;
+    bottom: 10px;
     right: 0px;
-}
-
-#settings-button {
-    background-color: transparent;
-    color: gray;
-    font-size: 1.3em;
 }

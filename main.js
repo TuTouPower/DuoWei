@@ -38,11 +38,15 @@ function createWindow(config) {
 }
 
 function createMainWindow () {
-    mainWindow = createWindow({width: 520, height: 270, htmlFile: 'index.html'});
+    mainWindow = createWindow({width: 520, height: 300, htmlFile: 'index.html'});
 }
 
 function createSettingsWindow () {
     settingsWindow = createWindow({width: 300, height: 200, htmlFile: 'settings.html'});
+}
+
+function createContactUsWindow () {
+    contactUsWindow = createWindow({width: 300, height: 200, htmlFile: 'contact_us.html'});
 }
 
 app.whenReady().then(async () => {
@@ -146,6 +150,14 @@ ipcMain.on('set-wechat-path-clicked', (event) => {
 
 ipcMain.on('open-settings', (event) => {
     createSettingsWindow();
+});
+
+ipcMain.on('check-updates', (event) => {
+    createSettingsWindow();
+});
+
+ipcMain.on('contact-us', (event) => {
+    createContactUsWindow();
 });
 
 ipcMain.on('get-wechat-path', (event) => {

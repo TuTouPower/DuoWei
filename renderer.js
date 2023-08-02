@@ -12,6 +12,8 @@ const weChatCountLabel = document.querySelector('label[for="wechat-count-input"]
 const weChatCountInput = document.getElementById('wechat-count-input');
 const runCommandButton = document.getElementById('run-command-button');
 const settingsButton = document.getElementById('settings-button');
+const checkUpdatesButton = document.getElementById('check-updates-button');
+const contactUsButton = document.getElementById('contact-us-button');
 
 // 1+ 运行中的进程数
 // 0 未运行
@@ -20,39 +22,44 @@ const settingsButton = document.getElementById('settings-button');
 // -10000 初始值
 let weChatStatus = -10000;
 
+function activateButton(button) {
+    button.classList.remove('button-inactive');
+    button.classList.add('button-active');
+}
+
+function deactivateButton(button) {
+    button.classList.remove('button-active');
+    button.classList.add('button-inactive');
+}
+
 function updateWeChatStatus(status) {
     weChatStatus = status;
     let statusText = '';
-    let activeButtonColor = '#007BFF';
-    let inactiveButtonColor = 'gray';
-    let selectWeChatPathButtonColor = '';
-    let runCommandButtonColor = '';
 
+    console.log(weChatStatus);
     switch (weChatStatus) {
         case 0:
             statusText = i18next.t('wechat_status_0');
-            runCommandButtonColor = activeButtonColor;
-            selectWeChatPathButtonColor = inactiveButtonColor;
+            activateButton(runCommandButton);
+            deactivateButton(selectWeChatPathButton);
             break;
         case -1:
             statusText = i18next.t('wechat_status_negative_1');
-            runCommandButtonColor = inactiveButtonColor;
-            selectWeChatPathButtonColor = activeButtonColor;
+            deactivateButton(runCommandButton);
+            activateButton(selectWeChatPathButton);
             break;
         case -2:
             statusText = i18next.t('wechat_status_negative_2');
-            runCommandButtonColor = inactiveButtonColor;
-            selectWeChatPathButtonColor = activeButtonColor;
+            deactivateButton(runCommandButton);
+            activateButton(selectWeChatPathButton);
             break;
         default:
             statusText = `${weChatStatus} ` + i18next.t('wechat_status_positive_num');
-            runCommandButtonColor = inactiveButtonColor;
-            selectWeChatPathButtonColor = inactiveButtonColor;
+            deactivateButton(runCommandButton);
+            deactivateButton(selectWeChatPathButton);
     }
 
     weChatStatusText.textContent = statusText;
-    runCommandButton.style.background = runCommandButtonColor;
-    selectWeChatPathButton.style.background = selectWeChatPathButtonColor;
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -76,6 +83,8 @@ window.addEventListener('DOMContentLoaded', () => {
             weChatCountLabel.innerText = t('wechat_count_label');
             runCommandButton.innerText = t('run_command_button');
             settingsButton.innerText = t('settings_button');
+            checkUpdatesButton.innerText = t('check_updates_button');
+            contactUsButton.innerText = t('contact_us_button');
         });
 
     ipcRenderer.on('wechat-path', (event, path) => {
@@ -111,5 +120,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     settingsButton.addEventListener('click', () => {
         ipcRenderer.send('open-settings');
+    });
+
+    checkUpdatesButton.addEventListener('click', () => {
+        ipcRenderer.send('check-updates');
+    });
+
+    contactUsButton.addEventListener('click', () => {
+        ipcRenderer.send('contact-us');
     });
 });

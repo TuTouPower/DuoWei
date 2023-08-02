@@ -6,6 +6,8 @@
     "wechat_count_label": "微信多开个数：",
     "run_command_button": "运行",
     "settings_button": "设置",
+    "check_updates_button": "检查更新",
+    "contact_us_button": "联系我们",
     "wechat_status_positive_num": "个微信正在运行，请退出微信，然后再执行本程序以多开微信。",
     "wechat_status_0": "请输入微信多开个数。然后点击运行按钮。",
     "wechat_status_negative_1": "微信安装路径为空，请选择微信安装路径。",
