@@ -20,5 +20,7 @@
     "no": "否",
     "update_available_message": "有一个可用的更新。您想现在下载并安装它吗？",
     "update_not_available_title": "没有可用的更新。",
-    "error_checking_updates_message": "检查更新时出错。请稍后再试。"
+    "error_checking_updates_message": "检查更新时出错。请稍后再试。",
+    "initI18n_success_message": "i18next 语言本地化初始化成功",
+    "initI18n_error_message": "i18next 语言本地化初始化出错"
 }

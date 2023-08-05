@@ -3,7 +3,16 @@ const path = require('path');
 const find = require('find-process');
 const axios = require('axios');
 const {shell} = require('electron');
-const i18next = require('./i18nConfig.js'); 
+const { initI18n, i18n } = require('./i18nConfig.js');
+
+function initI18nUtil() {
+    initI18n((err, t) => {
+        if (err) {
+            console.log(t('initI18n_error_message'));
+            console.log('initI18n went wrong loading', err);
+        }
+    });
+}
 
 async function findWeChatAppPath() {
     const applicationsPath = '/Applications';
@@ -139,5 +148,7 @@ module.exports = {
     selectWeChatAppThroughDialog,
     checkWeChatStatus,
     editWeChatPathAndStatus,
-    checkForUpdates
+    checkForUpdates,
+    initI18nUtil,
+    i18n,
 }

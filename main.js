@@ -1,8 +1,8 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates } = require('./scripts/utils.js');
+const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates, initI18nUtil, i18n } = require('./scripts/utils.js');
 const { exec } = require('child_process');
 const Store = require('electron-store');
-const i18n = require('./scripts/i18nConfig.js');
+// const { initI18n, i18n } = require('./scripts/i18nConfig.js');
 
 let mainWindow;
 let settingsWindow;
@@ -26,7 +26,7 @@ function createWindow(config) {
 
     window.once('ready-to-show', () => {
         window.show();
-        window.webContents.openDevTools({ mode: 'detach' });
+        // window.webContents.openDevTools({ mode: 'detach' });
     });
 
     return window;
@@ -48,6 +48,12 @@ app.whenReady().then(async () => {
     // Prioritize getting weChatAppPath from store, if unsuccessful then call findWeChatAppPath
     weChatAppPath = store.get('wechatAppPath') || await findWeChatAppPath();
     weChatOpenCount = store.get('wechatOpenCount', 1);
+
+    // initI18n((t) => {
+    //     console.log(t('success_message'));
+    // });
+
+    initI18nUtil();
 
     createMainWindow();
 
@@ -101,7 +107,7 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
         let promise = new Promise((resolve, reject) => {
             exec(runWeChatShell, (error, stdout, stderr) => {
                 if (error) {
-                    console.error(`exec error: ${error}`);
+                    console.error(`exec error: ${JSON.stringify(error)}`);
                     reject(error);  // 如果有错误，reject 这个 promise
                 } else {
                     console.log(`stdout: ${stdout}`);
@@ -115,19 +121,19 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
 
     // 等待所有 promise 完成
     Promise.all(promises)
-        .then(() => {
-            // 如果所有命令都执行成功，弹出对话框并退出程序
+    .then(() => {
+        // 如果所有命令都执行成功，弹出对话框并退出程序
             dialog.showMessageBox({
                 message: i18n.t('success_message'),
                 buttons: [i18n.t('ok')]
             }).then(() => {
                 app.quit();
             });
-        })
-        .catch((error) => {
-            // 如果有命令执行失败，也弹出对话框
+    })
+    .catch((error) => {
+        // 如果有命令执行失败，也弹出对话框
             dialog.showErrorBox('Error', `${error.message} ` + i18n.t('error_message'));
-        });
+    });
 });
 
 async function handleSetWeChatPath() {

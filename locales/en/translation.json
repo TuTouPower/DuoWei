@@ -20,5 +20,7 @@
     "No": "No",
     "update_available_message": "New version is available, do you want to update?",
     "update_not_available_title": "No updates available.",
-    "error_checking_updates_message": "Error checking updates."
+    "error_checking_updates_message": "Error checking updates.",
+    "initI18n_success_message": "i18next initialized success.",
+    "initI18n_error_message": "i18next initialized error."
 }
