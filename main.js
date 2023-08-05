@@ -3,7 +3,7 @@ const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, edit
 const { exec } = require('child_process');
 const Store = require('electron-store');
 const i18next = require('./i18nConfig.js');
- 
+
 let mainWindow;
 let settingsWindow;
 let contactUsWindow;

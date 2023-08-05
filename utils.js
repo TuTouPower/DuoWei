@@ -121,6 +121,10 @@ async function checkForUpdates(dialog, currentVersion) {
         }
     } catch (error) {
         console.error('Error checking for updates:', error);
+        dialog.showMessageBox({
+            title: 'Error',
+            message: i18next.t('error_checking_updates_message'),
+        });
     }
 }
 

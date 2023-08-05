@@ -17,5 +17,8 @@
     "error_message": "WeChat Multi-opener error!",
     "ok": "OK",
     "Yes": "Yes",
-    "No": "No"
+    "No": "No",
+    "update_available_message": "New version is available, do you want to update?",
+    "update_not_available_title": "No updates available.",
+    "error_checking_updates_message": "Error checking updates."
 }

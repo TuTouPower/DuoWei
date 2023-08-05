@@ -35,31 +35,39 @@ function deactivateButton(button) {
 function updateWeChatStatus(status) {
     weChatStatus = status;
     let statusText = '';
+    let statusColor = '';
+    let rightColor = "#888";
+    let errorColor = "red";
 
     console.log(weChatStatus);
     switch (weChatStatus) {
         case 0:
             statusText = i18next.t('wechat_status_0');
+            statusColor = rightColor;
             activateButton(runCommandButton);
             deactivateButton(selectWeChatPathButton);
             break;
         case -1:
             statusText = i18next.t('wechat_status_negative_1');
+            statusColor = errorColor;
             deactivateButton(runCommandButton);
             activateButton(selectWeChatPathButton);
             break;
         case -2:
             statusText = i18next.t('wechat_status_negative_2');
+            statusColor = errorColor;
             deactivateButton(runCommandButton);
             activateButton(selectWeChatPathButton);
             break;
         default:
             statusText = `${weChatStatus} ` + i18next.t('wechat_status_positive_num');
+            statusColor = errorColor;
             deactivateButton(runCommandButton);
             deactivateButton(selectWeChatPathButton);
     }
 
     weChatStatusText.textContent = statusText;
+    weChatStatusText.style.color = statusColor;
 }
 
 window.addEventListener('DOMContentLoaded', () => {
