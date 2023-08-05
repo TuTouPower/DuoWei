@@ -1,22 +1,12 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus } = require('./utils.js');
+const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates } = require('./utils.js');
 const { exec } = require('child_process');
 const Store = require('electron-store');
-const i18next = require('i18next');
-const Backend = require('i18next-fs-backend');
-
-i18next
-    .use(Backend)
-    .init({
-        lng: 'zh', // 默认语言
-        fallbackLng: 'en', // 如果当前语言的翻译不存在，将使用此备用语言
-        backend: {
-            loadPath: __dirname + '/locales/{{lng}}/translation.json'
-        }
-    });
-
+const i18next = require('./i18nConfig.js');
+ 
 let mainWindow;
 let settingsWindow;
+let contactUsWindow;
 let weChatAppPath;
 let weChatOpenCount = 1;
 const store = new Store();
@@ -28,11 +18,16 @@ function createWindow(config) {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-        }
+        },
+        show: false  // 先不显示窗口
     });
 
-    // window.webContents.openDevTools();
     window.loadFile(config.htmlFile);
+
+    window.once('ready-to-show', () => {
+        window.show();
+        // window.webContents.openDevTools();
+    });
 
     return window;
 }
@@ -153,7 +148,8 @@ ipcMain.on('open-settings', (event) => {
 });
 
 ipcMain.on('check-updates', (event) => {
-    createSettingsWindow();
+    let currentVersion = app.getVersion();
+    checkForUpdates(dialog, currentVersion);
 });
 
 ipcMain.on('contact-us', (event) => {

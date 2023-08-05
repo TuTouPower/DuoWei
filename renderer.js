@@ -2,18 +2,18 @@ const { ipcRenderer } = require('electron');
 const i18next = require('i18next');
 const Backend = require('i18next-fs-backend');
 
-const duoweiTitle = document.getElementById('title');
-const duoweiHeadline = document.getElementById('headline');
-const weChatStatusText = document.getElementById('wechat-status');
-const weChatPathLabel = document.querySelector('label[for="wechat-path-input"]')
-const weChatPathInput = document.getElementById('wechat-path-input');
-const selectWeChatPathButton = document.getElementById('select-wechat-path-button');
-const weChatCountLabel = document.querySelector('label[for="wechat-count-input"]')
-const weChatCountInput = document.getElementById('wechat-count-input');
-const runCommandButton = document.getElementById('run-command-button');
-const settingsButton = document.getElementById('settings-button');
-const checkUpdatesButton = document.getElementById('check-updates-button');
-const contactUsButton = document.getElementById('contact-us-button');
+const duoweiTitle               =   document.getElementById('title');
+const duoweiHeadline            =   document.getElementById('headline');
+const weChatStatusText          =   document.getElementById('wechat-status');
+const weChatPathLabel           =   document.querySelector('label[for="wechat-path-input"]')
+const weChatPathInput           =   document.getElementById('wechat-path-input');
+const selectWeChatPathButton    =   document.getElementById('select-wechat-path-button');
+const weChatCountLabel          =   document.querySelector('label[for="wechat-count-input"]')
+const weChatCountInput          =   document.getElementById('wechat-count-input');
+const runCommandButton          =   document.getElementById('run-command-button');
+// const settingsButton            =   document.getElementById('settings-button');
+const checkUpdatesButton        =   document.getElementById('check-updates-button');
+const contactUsButton           =   document.getElementById('contact-us-button');
 
 // 1+ 运行中的进程数
 // 0 未运行
@@ -82,7 +82,7 @@ window.addEventListener('DOMContentLoaded', () => {
             selectWeChatPathButton.innerText = t('select_wechat_path_button');
             weChatCountLabel.innerText = t('wechat_count_label');
             runCommandButton.innerText = t('run_command_button');
-            settingsButton.innerText = t('settings_button');
+            // settingsButton.innerText = t('settings_button');
             checkUpdatesButton.innerText = t('check_updates_button');
             contactUsButton.innerText = t('contact_us_button');
         });
@@ -118,9 +118,9 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    settingsButton.addEventListener('click', () => {
-        ipcRenderer.send('open-settings');
-    });
+    // settingsButton.addEventListener('click', () => {
+    //     ipcRenderer.send('open-settings');
+    // });
 
     checkUpdatesButton.addEventListener('click', () => {
         ipcRenderer.send('check-updates');

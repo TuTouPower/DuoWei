@@ -15,5 +15,9 @@
     "wechat_status_negative_10000": "正在检查微信运行状态",
     "success_message": "微信多开成功，本程序退出",
     "error_message": "微信多开失败，请重试",
-    "ok": "确定"
+    "ok": "确定",
+    "yes": "是",
+    "no": "否",
+    "update_available_message": "有一个可用的更新。您想现在下载并安装它吗？",
+    "update_not_available_title": "没有可用的更新。"
 }

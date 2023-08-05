@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const find = require('find-process');
+const axios = require('axios');
+const {shell} = require('electron');
+const i18next = require('./i18nConfig.js'); 
 
 async function findWeChatAppPath() {
     const applicationsPath = '/Applications';
@@ -87,9 +90,50 @@ async function editWeChatPathAndStatus(mainWindow, weChatAppPath, weChatStatus) 
     }
 }
 
+async function checkForUpdates(dialog, currentVersion) {
+    console.log('Checking for updates...');
+    console.log('Current version:', currentVersion);
+    try {
+        // 虚构的地址
+        const response = await axios.get('http://www.baidu.com/duo-wei/check-for-updates', {
+            params: {
+                currentVersion,
+            },
+        });
+        console.log('Response:', response.data);
+        if (response.data.hasUpdate) {
+            console.log('Update available');
+            const userConsent = dialog.showMessageBoxSync({
+                type: 'question',
+                buttons: [i18next.t('yes'), i18next.t('no') ],
+                title: 'Confirm',
+                message: i18next.t('update_available_message'),
+            });
+            console.log('User consent:', userConsent);
+            if (userConsent === 0) {
+                openUpdateLink(response.data.updateUrl);
+            }
+        } else {
+            dialog.showMessageBox({
+                title: 'No Updates',
+                message: i18next.t('updates_not_available_message'),
+            });
+        }
+    } catch (error) {
+        console.error('Error checking for updates:', error);
+    }
+}
+
+function openUpdateLink(url) {
+    shell.openExternal(url).catch(error => {
+        console.error('Error opening update URL:', error);
+    });
+}
+
 module.exports = {
     findWeChatAppPath,
     selectWeChatAppThroughDialog,
     checkWeChatStatus,
-    editWeChatPathAndStatus
+    editWeChatPathAndStatus,
+    checkForUpdates
 }

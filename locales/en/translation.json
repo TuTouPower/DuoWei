@@ -15,5 +15,7 @@
     "wechat_status_negative_10000": "Checking the operation status of WeChat.",
     "success_message": "WeChat Multi-opener success!",
     "error_message": "WeChat Multi-opener error!",
-    "ok": "OK"
+    "ok": "OK",
+    "Yes": "Yes",
+    "No": "No"
 }
