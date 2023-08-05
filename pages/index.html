@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="title">WeChat Multi-opener</title>
+    <link rel="stylesheet" type="text/css" href="./index.css">
+</head>
+<body>
+    <div id="container">
+        <header>
+            <h1 id="headline">WeChat Multi-opener</h1>
+        </header>
+
+        <p id="wechat-status">Checking the operation status of WeChat.</p>
+        
+        <main>
+            <section>
+                <div class="input-group">
+                    <label for="wechat-path-input">WeChat Installation Path: </label>
+                    <input id="wechat-path-input" type="text">
+                    <button id="select-wechat-path-button">Select</button>
+                </div>
+                <div class="input-group">
+                    <label for="wechat-count-input">WeChat Multi-open Count: </label>
+                    <input id="wechat-count-input" type="number" min="1" step="1" value="2">
+                    <button id="run-command-button">   Run  </button>
+                </div>
+            </section>
+            <nav>
+                <!-- <button id="settings-button">Settings</button> -->
+                <button id="check-updates-button">Check Updates</button>
+                <button id="contact-us-button">Contact Us</button>
+            </nav>
+        </main>
+    </div>
+
+    <script src="../renderer.js"></script>
+</body>
+</html>
