@@ -105,9 +105,9 @@ async function checkForUpdates(dialog, currentVersion) {
             console.log('Update available');
             const userConsent = dialog.showMessageBoxSync({
                 type: 'question',
-                buttons: [i18next.t('yes'), i18next.t('no') ],
+                buttons: [i18n.t('yes'), i18n.t('no') ],
                 title: 'Confirm',
-                message: i18next.t('update_available_message'),
+                message: i18n.t('update_available_message'),
             });
             console.log('User consent:', userConsent);
             if (userConsent === 0) {
@@ -116,14 +116,14 @@ async function checkForUpdates(dialog, currentVersion) {
         } else {
             dialog.showMessageBox({
                 title: 'No Updates',
-                message: i18next.t('updates_not_available_message'),
+                message: i18n.t('updates_not_available_message'),
             });
         }
     } catch (error) {
         console.error('Error checking for updates:', error);
         dialog.showMessageBox({
             title: 'Error',
-            message: i18next.t('error_checking_updates_message'),
+            message: i18n.t('error_checking_updates_message'),
         });
     }
 }

@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates } = require('./scripts/utils.js');
 const { exec } = require('child_process');
 const Store = require('electron-store');
-const i18next = require('./scripts/i18nConfig.js');
+const i18n = require('./scripts/i18nConfig.js');
 
 let mainWindow;
 let settingsWindow;
@@ -26,7 +26,7 @@ function createWindow(config) {
 
     window.once('ready-to-show', () => {
         window.show();
-        // window.webContents.openDevTools();
+        window.webContents.openDevTools({ mode: 'detach' });
     });
 
     return window;
@@ -118,15 +118,15 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
         .then(() => {
             // 如果所有命令都执行成功，弹出对话框并退出程序
             dialog.showMessageBox({
-                message: i18next.t('success_message'),
-                buttons: [i18next.t('ok')]
+                message: i18n.t('success_message'),
+                buttons: [i18n.t('ok')]
             }).then(() => {
                 app.quit();
             });
         })
         .catch((error) => {
             // 如果有命令执行失败，也弹出对话框
-            dialog.showErrorBox('Error', `${error.message} ` + i18next.t('error_message'));
+            dialog.showErrorBox('Error', `${error.message} ` + i18n.t('error_message'));
         });
 });
 
