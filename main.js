@@ -1,8 +1,8 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates } = require('./utils.js');
+const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates } = require('./scripts/utils.js');
 const { exec } = require('child_process');
 const Store = require('electron-store');
-const i18next = require('./i18nConfig.js');
+const i18next = require('./scripts/i18nConfig.js');
 
 let mainWindow;
 let settingsWindow;
@@ -33,15 +33,15 @@ function createWindow(config) {
 }
 
 function createMainWindow () {
-    mainWindow = createWindow({width: 520, height: 300, htmlFile: 'index.html'});
+    mainWindow = createWindow({width: 520, height: 300, htmlFile: './pages/index.html'});
 }
 
 function createSettingsWindow () {
-    settingsWindow = createWindow({width: 300, height: 200, htmlFile: 'settings.html'});
+    settingsWindow = createWindow({width: 300, height: 200, htmlFile: './pages/settings.html'});
 }
 
 function createContactUsWindow () {
-    contactUsWindow = createWindow({width: 300, height: 200, htmlFile: 'contact_us.html'});
+    contactUsWindow = createWindow({width: 300, height: 200, htmlFile: './pages/contact_us.html'});
 }
 
 app.whenReady().then(async () => {

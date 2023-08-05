@@ -77,7 +77,7 @@ window.addEventListener('DOMContentLoaded', () => {
             lng: 'zh',
             fallbackLng: 'en',
             backend: {
-                loadPath: __dirname + '/locales/{{lng}}/translation.json'
+                loadPath: __dirname + '/../locales/{{lng}}/translation.json'
             }
         }, function(err, t) {
             if (err) return console.log('something went wrong loading', err);
