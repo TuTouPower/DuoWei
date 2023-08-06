@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates, initI18nUtil, i18n } = require('./scripts/utils.js');
+const { path, findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates, initI18nUtil, i18n } = require('./scripts/utils.js');
 const { exec } = require('child_process');
 const Store = require('electron-store');
 // const { initI18n, i18n } = require('./scripts/i18nConfig.js');
@@ -15,6 +15,8 @@ function createWindow(config) {
     const window = new BrowserWindow({
         width: config.width,
         height: config.height,
+        // icon: './assets/logos/duo_wei_logo.icns',
+        icon: 'assets/logos/github.ico',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,

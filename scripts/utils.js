@@ -151,4 +151,5 @@ module.exports = {
     checkForUpdates,
     initI18nUtil,
     i18n,
+    path,
 }

@@ -27,7 +27,8 @@
   "build": {
     "appId": "com.xiaoxiaoguang.duowei",
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "icon": "./assets/logos/duo_wei_logo.icns"
     },
     "win": {
       "target": "nsis"
