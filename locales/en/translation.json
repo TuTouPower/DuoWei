@@ -20,7 +20,11 @@
     "No": "No",
     "update_available_message": "New version is available, do you want to update?",
     "update_not_available_title": "No updates available.",
-    "error_checking_updates_message": "Error checking updates.",
+    "error_checking_updates_message": "No updates available.",
     "initI18n_success_message": "i18next initialized success.",
-    "initI18n_error_message": "i18next initialized error."
+    "initI18n_error_message": "i18next initialized error.",
+    "contact_us_title": "Contact us",
+    "contact_us_headline": "Communicate your ideas with us",
+    "contact_us_github_link": "Open source: TuTouPower/DuoWei",
+    "contact_us_feedback_link": "Feedback & suggestions, please click."
 }

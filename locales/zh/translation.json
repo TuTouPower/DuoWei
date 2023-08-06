@@ -20,7 +20,11 @@
     "no": "否",
     "update_available_message": "有一个可用的更新。您想现在下载并安装它吗？",
     "update_not_available_title": "没有可用的更新。",
-    "error_checking_updates_message": "检查更新时出错。请稍后再试。",
+    "error_checking_updates_message": "没有可用的更新。",
     "initI18n_success_message": "i18next 语言本地化初始化成功",
-    "initI18n_error_message": "i18next 语言本地化初始化出错"
+    "initI18n_error_message": "i18next 语言本地化初始化出错",
+    "contact_us_title": "联系我们",
+    "contact_us_headline": "与我们交流你的创意",
+    "contact_us_github_link": "代码开源：TuTouPower/DuoWei",
+    "contact_us_feedback_link": "反馈建议请点击"
 }
