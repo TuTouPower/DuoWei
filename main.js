@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { path, findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates, initI18nUtil, i18n } = require('./scripts/utils.js');
+const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates, initI18nUtil, i18n } = require('./scripts/utils.js');
 const { exec } = require('child_process');
 const Store = require('electron-store');
 // const { initI18n, i18n } = require('./scripts/i18nConfig.js');
