@@ -1,0 +1,71 @@
+body, html {
+    padding: 0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* 使内容垂直居中 */
+    height: 100vh;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* 使内容垂直居中 */
+    width: 80%;
+}
+
+#headline {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 1.2em;
+    text-align: center; /* 让标题居中 */
+}
+
+.platforms {
+    display: flex;
+    flex-wrap: wrap; /* 允许项目换行 */
+    justify-content: center; /* 将项目居中对齐 */
+    width: 100%;
+}
+
+.links {
+    display: flex;
+    flex-wrap: wrap; /* 允许项目换行 */
+    justify-content: left; /* 将项目居中对齐 */
+    width: 100%;
+}
+
+.platform {
+    flex: 0 0 calc(50% - 20px); /* 两个平台每行，每个平台宽度是50%，减去左右的10px的边距 */
+    margin: 10px; /* 添加外边距，让它们有一定的间距 */
+    box-sizing: border-box;
+    display: flex; /* 让img和a在一行上 */
+    align-items: center; /* 使img和a垂直居中 */
+    text-align: left; /* 文本靠左对齐 */
+}
+
+.link {
+    margin: 10px; /* 添加外边距，让它们有一定的间距 */
+    box-sizing: border-box;
+    display: flex; /* 让img和a在一行上 */
+    text-align: left; /* 文本靠左对齐 */
+}
+
+img {
+    width: 16px; /* 为了统一所有平台的logo大小 */
+    height: 16px; /* 保持图片的纵横比 */
+    margin-right: 10px; /* 在图片和文本之间添加一些间隔 */
+}
+
+a {
+    font-size: 16px;
+    text-decoration: none; /* 去掉链接下划线 */
+    color: #333; /* 设置链接颜色 */
+}
+
+a:hover {
+    text-decoration: underline; /* 鼠标悬停时显示下划线 */
+}
