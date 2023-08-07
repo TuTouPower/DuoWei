@@ -31,7 +31,8 @@
       "icon": "./assets/logos/duo_wei_logo.icns"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "./assets/logos/duo_wei_logo.ico"
     },
     "asar": false
   }
