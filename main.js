@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { findWeChatAppPath, selectWeChatAppThroughDialog, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates, initI18nUtil, i18n } = require('./scripts/utils.js');
+const { findWeChatAppPath, selectWeChatAppThroughDialog, getWeChatExecutableFilePath, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates, initI18nUtil, i18n , os} = require('./scripts/utils.js');
 const { exec } = require('child_process');
 const Store = require('electron-store');
 // const { initI18n, i18n } = require('./scripts/i18nConfig.js');
@@ -7,8 +7,11 @@ const Store = require('electron-store');
 let mainWindow;
 let settingsWindow;
 let contactUsWindow;
+
+// mac .app 路径
+// windows .exe 路径
 let weChatAppPath;
-let weChatOpenCount = 1;
+let weChatOpenCount = 2;
 const store = new Store();
 
 function createWindow(config) {
@@ -100,7 +103,16 @@ ipcMain.on('not-run-command', (event, weChatStatus) => {
 });
 
 ipcMain.on('run-command', (event, count, weChatAppPath) => {
-    let runWeChatShell = `nohup ${weChatAppPath}/Contents/MacOS/WeChat > /dev/null 2>&1 &`;
+    let binPath = getWeChatExecutableFilePath(weChatAppPath);
+    let runWeChatShell;
+
+    if (os.platform() === 'darwin') {
+        runWeChatShell = `nohup "${binPath}" > /dev/null 2>&1 &`; // 注意路径被双引号包围
+    } else if (os.platform() === 'win32') {
+        runWeChatShell = `start "" "${binPath}"`; // 注意路径被双引号包围，并为 start 命令提供了一个空标题
+    } else {
+        throw new Error('Unsupported platform');
+    }
 
     let promises = [];  // 存储所有的 promise
 
@@ -125,16 +137,16 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
     Promise.all(promises)
     .then(() => {
         // 如果所有命令都执行成功，弹出对话框并退出程序
-            dialog.showMessageBox({
-                message: i18n.t('success_message'),
-                buttons: [i18n.t('ok')]
-            }).then(() => {
-                app.quit();
-            });
+        dialog.showMessageBox({
+            message: i18n.t('success_message'),
+            buttons: [i18n.t('ok')]
+        }).then(() => {
+            app.quit();
+        });
     })
     .catch((error) => {
         // 如果有命令执行失败，也弹出对话框
-            dialog.showErrorBox('Error', `${error.message} ` + i18n.t('error_message'));
+        dialog.showErrorBox('Error', `${error.message} ` + i18n.t('error_message'));
     });
 });
 

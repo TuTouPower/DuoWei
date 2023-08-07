@@ -4,6 +4,7 @@ const find = require('find-process');
 const axios = require('axios');
 const {shell} = require('electron');
 const { initI18n, i18n } = require('./i18nConfig.js');
+const os = require('os');
 
 function initI18nUtil() {
     initI18n((err, t) => {
@@ -14,30 +15,98 @@ function initI18nUtil() {
     });
 }
 
-async function findWeChatAppPath() {
-    const applicationsPath = '/Applications';
-    try {
-        const files = fs.readdirSync(applicationsPath);
-        for (let file of files) {
-            if (file.toLowerCase().startsWith('wechat.app')) {
-                return path.join(applicationsPath, file);
+function getAppInstallPaths() {
+    let appInstallPaths = [];
+    if (os.platform() === 'darwin') {
+        appInstallPaths = ['/Applications'];
+    } else if (os.platform() === 'win32') {
+        const driveLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        for (let letter of driveLetters) {
+            const drivePath = `${letter}:\\`;
+            if (fs.existsSync(drivePath)) {
+                appInstallPaths.push(path.join(drivePath, 'Program Files'));
+                appInstallPaths.push(path.join(drivePath, 'Program Files (x86)'));
             }
         }
-    } catch (err) {
-        console.error(err);
-        throw err;
+    } else {
+        throw new Error('Unsupported platform');
+    }
+    return appInstallPaths;
+}
+
+function findFileInDirectory(directory, filename) {
+    const files = fs.readdirSync(directory);
+    for (let file of files) {
+        if (file.toLowerCase() === filename.toLowerCase()) {
+            return path.join(directory, file);
+        }
     }
     return null;
-};
+}
+
+function findWeChatInAppInstallPath(appInstallPath) {
+    if (os.platform() === 'darwin') {
+        return findFileInDirectory(appInstallPath, 'wechat.app');
+    } else if (os.platform() === 'win32') {
+        const tencentPath = findFileInDirectory(appInstallPath, 'tencent');
+        if (tencentPath) {
+            const weChatPath = findFileInDirectory(tencentPath, 'wechat');
+            if (weChatPath) {
+                return findFileInDirectory(weChatPath, 'wechat.exe');
+            }
+        } else {
+            const weChatPath = findFileInDirectory(appInstallPath, 'wechat');
+            if (weChatPath) {
+                return findFileInDirectory(weChatPath, 'wechat.exe');
+            }
+        }
+    } else {
+        throw new Error('Unsupported platform');
+    }
+    return null;
+}
+
+async function findWeChatAppPath() {
+    const appInstallPaths = getAppInstallPaths();
+
+    for (let appInstallPath of appInstallPaths) {
+        if (fs.existsSync(appPath)) {
+            const weChatAppPath = findWeChatInAppInstallPath(appInstallPath);
+            if (weChatAppPath) {
+                return weChatAppPath;
+            }
+        }
+    }
+    return null;
+}
 
 async function selectWeChatAppThroughDialog(dialog, mainWindow) {
-    try {
-        const result = await dialog.showOpenDialog(mainWindow, {
+    let dialogOptions;
+
+    const platformOptions = {
+        'darwin': {
             title: 'Select WeChat App',
             properties: ['openFile'],
             defaultPath: '/Applications',
             filters: [{ name: 'Applications', extensions: ['app'] }]
-        });
+        },
+        'win32': {
+            title: 'Select WeChat Exe',
+            properties: ['openFile'],
+            defaultPath: 'C:\\Program Files',
+            filters: [{ name: 'Executable File', extensions: ['exe'] }]
+        }
+    };
+    
+    const currentPlatform = os.platform();
+    if (platformOptions[currentPlatform]) {
+        dialogOptions = platformOptions[currentPlatform];
+    } else {
+        throw new Error('Unsupported platform');
+    }
+
+    try {
+        const result = await dialog.showOpenDialog(mainWindow, dialogOptions);
         if (!result.canceled) {
             const weChatAppPath = result.filePaths[0];
             return weChatAppPath;
@@ -55,15 +124,47 @@ function isWeChatAppDirectoryValid(weChatAppPath) {
     return !!weChatAppPath;
 };
 
+function findCaseInsensitiveMatch(dir, filename) {
+    const files = fs.readdirSync(dir);
+    for (let file of files) {
+        if (file.toLowerCase() === filename.toLowerCase()) {
+            return file;
+        }
+    }
+    return null;
+}
+
+function getWeChatExecutableFilePath(weChatAppPath) {
+    if (os.platform() === 'darwin') {
+        const contentsDir = findCaseInsensitiveMatch(weChatAppPath, 'Contents');
+        if (!contentsDir) return null;
+
+        const macOSDir = findCaseInsensitiveMatch(path.join(weChatAppPath, contentsDir), 'MacOS');
+        if (!macOSDir) return null;
+
+        const weChatFile = findCaseInsensitiveMatch(path.join(weChatAppPath, contentsDir, macOSDir), 'WeChat');
+        if (!weChatFile) return null;
+
+        return path.join(weChatAppPath, contentsDir, macOSDir, weChatFile);
+    } else if (os.platform() === 'win32') {
+        return weChatAppPath;
+    } else {
+        console.error(err);
+        throw new Error('Unsupported platform');
+    }
+}
+
 function isWeChatExecutableFileValid(weChatAppPath) {
-    const executableFilePath = path.join(weChatAppPath, 'Contents', 'MacOS', 'WeChat');
+    const binPath = getWeChatExecutableFilePath(weChatAppPath);
+    if (!binPath) return false;
+
     try {
-        return fs.existsSync(executableFilePath);
+        return fs.existsSync(binPath);
     } catch (err) {
         console.error(err);
         throw err;
     }
-};
+}
 
 async function checkWeChatStatus(weChatAppPath) {
     // 1+ 运行中的进程数
@@ -73,13 +174,13 @@ async function checkWeChatStatus(weChatAppPath) {
     // -10000 初始值
     let weChatStatus;
 
-    if (!isWeChatAppDirectoryValid(weChatAppPath)) {
+    if (os.platform() === 'darwin' && !isWeChatAppDirectoryValid(weChatAppPath)) {
         weChatAppPath = '';
         weChatStatus = -1;
     } else if (!isWeChatExecutableFileValid(weChatAppPath)) {
         weChatStatus = -2;
     } else {
-        const binPath = path.join(weChatAppPath, 'Contents', 'MacOS', 'WeChat');
+        const binPath = getWeChatExecutableFilePath(weChatAppPath);
         const list = await find('name', 'WeChat', true);
         const specificProcessList = list.filter(proc => proc.bin === binPath);
         const WeChatRunningProcessCount = specificProcessList.length;
@@ -146,9 +247,11 @@ function openUpdateLink(url) {
 module.exports = {
     findWeChatAppPath,
     selectWeChatAppThroughDialog,
+    getWeChatExecutableFilePath,
     checkWeChatStatus,
     editWeChatPathAndStatus,
     checkForUpdates,
     initI18nUtil,
+    os,
     i18n,
 }

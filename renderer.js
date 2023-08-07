@@ -10,7 +10,6 @@ const selectWeChatPathButton    =   document.getElementById('select-wechat-path-
 const weChatCountLabel          =   document.querySelector('label[for="wechat-count-input"]')
 const weChatCountInput          =   document.getElementById('wechat-count-input');
 const runCommandButton          =   document.getElementById('run-command-button');
-// const settingsButton            =   document.getElementById('settings-button');
 const checkUpdatesButton        =   document.getElementById('check-updates-button');
 const contactUsButton           =   document.getElementById('contact-us-button');
 
@@ -79,7 +78,6 @@ window.addEventListener('DOMContentLoaded', () => {
         selectWeChatPathButton.innerText = t('select_wechat_path_button');
         weChatCountLabel.innerText = t('wechat_count_label');
         runCommandButton.innerText = t('run_command_button');
-        // settingsButton.innerText = t('settings_button');
         checkUpdatesButton.innerText = t('check_updates_button');
         contactUsButton.innerText = t('contact_us_button');
     });
@@ -114,10 +112,6 @@ window.addEventListener('DOMContentLoaded', () => {
             ipcRenderer.send('run-command', weChatCountInput.value, weChatPathInput.value);
         }
     });
-
-    // settingsButton.addEventListener('click', () => {
-    //     ipcRenderer.send('open-settings');
-    // });
 
     checkUpdatesButton.addEventListener('click', () => {
         ipcRenderer.send('check-updates');
