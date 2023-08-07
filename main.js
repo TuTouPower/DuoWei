@@ -17,7 +17,7 @@ function createWindow(config) {
     const window = new BrowserWindow({
         width: config.width,
         height: config.height,
-        icon: './assets/logos/duo_wei_logo.icns',
+        icon: './assets/logos/duo_wei_logo.ico',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
