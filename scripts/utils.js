@@ -204,8 +204,7 @@ async function checkForUpdates(dialog, currentVersion) {
     console.log('Checking for updates...');
     console.log('Current version:', currentVersion);
     try {
-        // 虚构的地址
-        const response = await axios.get('http://www.baidu.com/duo-wei/check-for-updates', {
+        const response = await axios.get('http://www.baidu.com/duo-wei/check-for-updates', {  // 虚构的地址
             params: {
                 currentVersion,
             },

@@ -2,7 +2,6 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { findWeChatAppPath, selectWeChatAppThroughDialog, getWeChatExecutableFilePath, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates, initI18nUtil, i18n , os} = require('./scripts/utils.js');
 const { exec } = require('child_process');
 const Store = require('electron-store');
-// const { initI18n, i18n } = require('./scripts/i18nConfig.js');
 
 let mainWindow;
 let settingsWindow;
@@ -18,8 +17,7 @@ function createWindow(config) {
     const window = new BrowserWindow({
         width: config.width,
         height: config.height,
-        // icon: './assets/logos/duo_wei_logo.icns',
-        icon: 'assets/logos/github.ico',
+        icon: './assets/logos/duo_wei_logo.icns',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -53,10 +51,6 @@ app.whenReady().then(async () => {
     // Prioritize getting weChatAppPath from store, if unsuccessful then call findWeChatAppPath
     weChatAppPath = store.get('wechatAppPath') || await findWeChatAppPath();
     weChatOpenCount = store.get('wechatOpenCount', 1);
-
-    // initI18n((t) => {
-    //     console.log(t('success_message'));
-    // });
 
     initI18nUtil();
 
@@ -136,7 +130,6 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
     // 等待所有 promise 完成
     Promise.all(promises)
     .then(() => {
-        // 如果所有命令都执行成功，弹出对话框并退出程序
         dialog.showMessageBox({
             message: i18n.t('success_message'),
             buttons: [i18n.t('ok')]
@@ -145,7 +138,6 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
         });
     })
     .catch((error) => {
-        // 如果有命令执行失败，也弹出对话框
         dialog.showErrorBox('Error', `${error.message} ` + i18n.t('error_message'));
     });
 });
