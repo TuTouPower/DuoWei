@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { findWeChatAppPath, selectWeChatAppThroughDialog, getWeChatExecutableFilePath, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates, initI18nUtil, i18n , os} = require('./scripts/utils.js');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const Store = require('electron-store');
 
 let mainWindow;
@@ -99,36 +99,35 @@ ipcMain.on('not-run-command', (event, weChatStatus) => {
 
 ipcMain.on('run-command', (event, count, weChatAppPath) => {
     let binPath = getWeChatExecutableFilePath(weChatAppPath);
-    let runWeChatShell;
+    let runWeChatShell, args;
 
     if (os.platform() === 'darwin') {
-        runWeChatShell = `nohup "${binPath}" > /dev/null 2>&1 &`; // 注意路径被双引号包围
+        runWeChatShell = binPath;
+        args = [];
     } else if (os.platform() === 'win32') {
-        runWeChatShell = `start "" "${binPath}"`; // 注意路径被双引号包围，并为 start 命令提供了一个空标题
+        runWeChatShell = 'cmd';
+        args = ['/c', 'start', '', `"${binPath}"`]; // 注意路径被双引号包围，并为 start 命令提供了一个空标题
     } else {
         throw new Error('Unsupported platform');
     }
 
-    let promises = [];  // 存储所有的 promise
+    let promises = [];
 
-    // 执行指定次数的命令
     for (let i = 0; i < count; i++) {
         let promise = new Promise((resolve, reject) => {
-            exec(runWeChatShell, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${JSON.stringify(error)}`);
-                    reject(error);  // 如果有错误，reject 这个 promise
-                } else {
-                    console.log(`stdout: ${stdout}`);
-                    console.error(`stderr: ${stderr}`);
-                    resolve();  // 如果没有错误，resolve 这个 promise
-                }
+            const child = spawn(runWeChatShell, args, { detached: true, stdio: 'ignore' });
+            child.on('error', (error) => {
+                console.error(`spawn error: ${JSON.stringify(error)}`);
+                reject(error);
             });
+            child.unref();  // 使子进程在父进程退出后继续运行
+            resolve();
         });
         console.log(`Run command ${i + 1} times`);
         promises.push(promise);
     }
     console.log(`Run command ${count} times in total`);
+
     // 等待所有 promise 完成
     Promise.all(promises)
     .then(() => {
