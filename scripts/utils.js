@@ -70,7 +70,7 @@ async function findWeChatAppPath() {
     const appInstallPaths = getAppInstallPaths();
 
     for (let appInstallPath of appInstallPaths) {
-        if (fs.existsSync(appPath)) {
+        if (fs.existsSync(appInstallPath)) {
             const weChatAppPath = findWeChatInAppInstallPath(appInstallPath);
             if (weChatAppPath) {
                 return weChatAppPath;
