@@ -1,7 +1,7 @@
 body, html {
     padding: 0;
     margin: 0;
-    font-family: Arial, sans-serif, 'STHeiti', 'SimHei', 'STSong', 'SimSun','PingFang SC', '微软雅黑';
+    font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
