@@ -125,20 +125,24 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
                 }
             });
         });
+        console.log(`Run command ${i + 1} times`);
         promises.push(promise);
     }
-
+    console.log(`Run command ${count} times in total`);
     // 等待所有 promise 完成
     Promise.all(promises)
     .then(() => {
+        console.log('All commands have been executed successfully');
         dialog.showMessageBox({
             message: i18n.t('success_message'),
             buttons: [i18n.t('ok')]
         }).then(() => {
+            console.log('App Quit');
             app.quit();
         });
     })
     .catch((error) => {
+        console.error('Error in executing commands:', error);
         dialog.showErrorBox('Error', `${error.message} ` + i18n.t('error_message'));
     });
 });
