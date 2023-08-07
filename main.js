@@ -25,6 +25,7 @@ function createWindow(config) {
         show: false  // 先不显示窗口
     });
 
+    window.setMenu(null) // 移除默认菜单
     window.loadFile(config.htmlFile);
 
     window.once('ready-to-show', () => {
