@@ -117,6 +117,8 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
         let promise = new Promise((resolve, reject) => {
             console.log('Run command:', runWeChatShell)
             console.log('Args:', args)
+            let command = runWeChatShell + ' ' + args.join(' ');
+            console.log('Running command:', command);
             const child = spawn(runWeChatShell, args, { detached: true, stdio: 'ignore' });
             child.on('error', (error) => {
                 console.error(`spawn error: ${JSON.stringify(error)}`);
