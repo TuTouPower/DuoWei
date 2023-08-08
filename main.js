@@ -106,7 +106,7 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
         args = [];
     } else if (os.platform() === 'win32') {
         runWeChatShell = 'cmd';
-        args = ['/c', 'start', '"WeChat"', `"${binPath}"`];; // 注意路径被双引号包围，并为 start 命令提供了一个空标题
+        args = ['/c', 'start', '""', `"${binPath}"`];; // 注意路径被双引号包围，并为 start 命令提供了一个空标题
     } else {
         throw new Error('Unsupported platform');
     }
