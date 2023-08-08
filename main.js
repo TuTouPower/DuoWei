@@ -116,7 +116,7 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
         binPath = `"${binPath}"`.replace(/^"([A-Za-z]:)(\\)(.*)$/, '$1"$2$3');
         console.log('binPath:', binPath);
 
-        fs.writeFileSync(batPath, `start ${binPath}\nexit\n`);
+        fs.writeFileSync(batPath, `start ${binPath}\nexit`);
         command = 'start';
         args = ['/min', '""', `"${batPath}"`];
     } else {
