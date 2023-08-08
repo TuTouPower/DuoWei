@@ -98,13 +98,14 @@ ipcMain.on('not-run-command', (event, weChatStatus) => {
 });
 
 ipcMain.on('run-command', (event, count, weChatAppPath) => {
-    let binPath = getWeChatExecutableFilePath(weChatAppPath).replace(/\\/g, '/');
+    let binPath = getWeChatExecutableFilePath(weChatAppPath)
     let runWeChatShell, args;
 
     if (os.platform() === 'darwin') {
         runWeChatShell = binPath;
         args = [];
     } else if (os.platform() === 'win32') {
+        binPath = binPath.replace(/\\/g, '\\');
         runWeChatShell = 'cmd';
         args = ['/c', 'start', '""', `"${binPath}"`];; // 注意路径被双引号包围，并为 start 命令提供了一个空标题
     } else {
