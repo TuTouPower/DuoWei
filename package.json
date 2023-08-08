@@ -21,8 +21,10 @@
     "electron-store": "8.1.0",
     "electron-updater": "^6.1.1",
     "find-process": "1.4.7",
+    "form-data": "^4.0.0",
     "i18next": "23.4.1",
-    "i18next-fs-backend": "2.1.5"
+    "i18next-fs-backend": "2.1.5",
+    "mime-types": "^2.1.35"
   },
   "build": {
     "appId": "com.xiaoxiaoguang.duowei",
