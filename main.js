@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { findWeChatAppPath, selectWeChatAppThroughDialog, getWeChatExecutableFilePath, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates, initI18nUtil, i18n , os} = require('./scripts/utils.js');
-const { spawn } = require('child_process');
+const { exec } = require('child_process');
 const Store = require('electron-store');
 
 let mainWindow;
@@ -98,16 +98,13 @@ ipcMain.on('not-run-command', (event, weChatStatus) => {
 });
 
 ipcMain.on('run-command', (event, count, weChatAppPath) => {
-    let binPath = getWeChatExecutableFilePath(weChatAppPath)
-    let runWeChatShell, args;
+    let binPath = getWeChatExecutableFilePath(weChatAppPath);
+    let command;
 
     if (os.platform() === 'darwin') {
-        runWeChatShell = binPath;
-        args = [];
+        command = `nohup "${binPath}" > /dev/null 2>&1 &`;
     } else if (os.platform() === 'win32') {
-        binPath = binPath.replace(/\\/g, '\\');
-        runWeChatShell = 'cmd';
-        args = ['/c', 'start', '""', `"${binPath}"`];; // 注意路径被双引号包围，并为 start 命令提供了一个空标题
+        command = `start "" "${binPath}"`; // 注意路径被双引号包围，并为 start 命令提供了一个空标题
     } else {
         throw new Error('Unsupported platform');
     }
@@ -116,17 +113,17 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
 
     for (let i = 0; i < count; i++) {
         let promise = new Promise((resolve, reject) => {
-            console.log('Run command:', runWeChatShell)
-            console.log('Args:', args)
-            let command = runWeChatShell + ' ' + args.join(' ');
             console.log('Running command:', command);
-            const child = spawn(runWeChatShell, args, { detached: true, stdio: 'ignore' });
-            child.on('error', (error) => {
-                console.error(`spawn error: ${JSON.stringify(error)}`);
-                reject(error);
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${JSON.stringify(error)}`);
+                    reject(error);
+                } else {
+                    console.log(`stdout: ${stdout}`);
+                    console.error(`stderr: ${stderr}`);
+                    resolve();
+                }
             });
-            child.unref();  // 使子进程在父进程退出后继续运行
-            resolve();
         });
         console.log(`Run command ${i + 1} times`);
         promises.push(promise);
