@@ -180,11 +180,9 @@ async function checkWeChatStatus(weChatAppPath) {
     } else if (!isWeChatExecutableFileValid(weChatAppPath)) {
         weChatStatus = -2;
     } else {
-        const binPath = getWeChatExecutableFilePath(weChatAppPath);
         const list = await find('name', 'WeChat', true);
-        const specificProcessList = list.filter(proc => proc.bin === binPath);
+        const specificProcessList = list.filter(proc => proc.bin.includes('WeChat.exe'));
         const WeChatRunningProcessCount = specificProcessList.length;
-
         weChatStatus = WeChatRunningProcessCount;
     }
 

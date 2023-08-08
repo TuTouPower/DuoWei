@@ -2,7 +2,12 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { findWeChatAppPath, selectWeChatAppThroughDialog, getWeChatExecutableFilePath, checkWeChatStatus, editWeChatPathAndStatus, checkForUpdates, initI18nUtil , os, i18n, path} = require('./scripts/utils.js');
 const { spawn } = require('child_process');
 const fs = require('fs');
-const Store = require('electron-store');
+
+let store;
+if (os.platform() === 'darwin'){
+    const Store = require('electron-store');
+    store = new Store();
+}
 
 let mainWindow;
 let settingsWindow;
@@ -12,7 +17,6 @@ let contactUsWindow;
 // windows .exe 路径
 let weChatAppPath;
 let weChatOpenCount = 2;
-const store = new Store();
 
 function createWindow(config) {
     const window = new BrowserWindow({
@@ -51,8 +55,13 @@ function createContactUsWindow () {
 
 app.whenReady().then(async () => {
     // Prioritize getting weChatAppPath from store, if unsuccessful then call findWeChatAppPath
-    weChatAppPath = store.get('wechatAppPath') || await findWeChatAppPath();
-    weChatOpenCount = store.get('wechatOpenCount', 1);
+    if (os.platform() === 'darwin') {
+        weChatAppPath = store.get('wechatAppPath') || await findWeChatAppPath();
+        weChatOpenCount = store.get('wechatOpenCount', 1);
+    } else {
+        weChatAppPath = await findWeChatAppPath();
+        weChatOpenCount = 1;
+    }
 
     initI18nUtil();
 
@@ -83,9 +92,11 @@ app.on('activate', () => {
 });
 
 app.on('before-quit', () => {
-    // Save user settings
-    store.set('wechatAppPath', weChatAppPath);
-    store.set('wechatOpenCount', weChatOpenCount);
+    if (os.platform() === 'win32') {
+        // Save user settings
+        store.set('wechatAppPath', weChatAppPath);
+        store.set('wechatOpenCount', weChatOpenCount);
+    }
 });
 
 ipcMain.on('not-run-command', (event, weChatStatus) => {
