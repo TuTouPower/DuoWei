@@ -98,7 +98,7 @@ ipcMain.on('not-run-command', (event, weChatStatus) => {
 });
 
 ipcMain.on('run-command', (event, count, weChatAppPath) => {
-    let binPath = getWeChatExecutableFilePath(weChatAppPath);
+    let binPath = getWeChatExecutableFilePath(weChatAppPath).replace(/\\/g, '/');
     let runWeChatShell, args;
 
     if (os.platform() === 'darwin') {
