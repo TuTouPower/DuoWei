@@ -113,12 +113,12 @@ ipcMain.on('run-command', (event, count, weChatAppPath) => {
         console.log('batPath:', batPath);
 
         console.log('binPath:', binPath);
-        binPath = `"${binPath}"`.replace(/^"([A-Za-z]:)(\\)(.*)$/, '$1"$2$3"');
+        binPath = `"${binPath}"`.replace(/^"([A-Za-z]:)(\\)(.*)$/, '$1"$2$3');
         console.log('binPath:', binPath);
 
-        fs.writeFileSync(batPath, `"${binPath}"\nexit\n`);
+        fs.writeFileSync(batPath, `start ${binPath}\nexit\n`);
         command = 'start';
-        args = ['/b', '""', `"${batPath}"`];
+        args = ['/min', '""', `"${batPath}"`];
     } else {
         throw new Error('Unsupported platform');
     }
