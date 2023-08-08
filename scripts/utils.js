@@ -253,4 +253,5 @@ module.exports = {
     initI18nUtil,
     os,
     i18n,
+    path,
 }
