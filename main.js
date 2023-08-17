@@ -48,7 +48,7 @@ function createSettingsWindow () {
 }
 
 function createContactUsWindow () {
-    contactUsWindow = createWindow({width: 400, height: 300, htmlFile: './pages/contact_us.html'});
+    contactUsWindow = createWindow({width: 400, height: 250, htmlFile: './pages/contact_us.html'});
 }
 
 app.whenReady().then(async () => {
